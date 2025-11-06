@@ -1,7 +1,7 @@
 {
-  "name": "@enescinar/twitter-mcp",
-  "version": "0.2.0",
-  "description": "A Model Context Protocol server allows to interact with Twitter, enabling posting tweets and searching Twitter.",
+  "name": "@muhammadsiddiq/twitter-mcp",
+  "version": "0.3.1",
+  "description": "A Model Context Protocol server allows to interact with Twitter, enabling posting tweets (with images), and searching Twitter.",
   "type": "module",
   "main": "build/index.js",
   "bin": {
@@ -9,7 +9,9 @@
   },
   "files": [
     "build",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",
@@ -23,25 +25,28 @@
     "twitter",
     "claude"
   ],
-  "author": "Enes Cinar",
+  "author": "genaiwithms",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0",
+    "@modelcontextprotocol/sdk": "^1.21.0",
     "dotenv": "^16.4.7",
     "mcp-evals": "^1.0.18",
     "twitter-api-v2": "^1.18.2",
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.24",
+    "jest": "^30.2.0",
     "typescript": "^5.3.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EnesCinr/twitter-mcp.git"
+    "url": "git+https://github.com/genaiwithms/twitter-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/EnesCinr/twitter-mcp/issues"
+    "url": "https://github.com/genaiwithms/twitter-mcp/issues"
   },
-  "homepage": "https://github.com/EnesCinr/twitter-mcp#readme"
+  "homepage": "https://github.com/genaiwithms/twitter-mcp#readme"
 }

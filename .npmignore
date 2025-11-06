@@ -1,0 +1,41 @@
+# Source files (only include built files)
+src/
+tsconfig.json
+.env
+.env.*
+
+# Development files
+node_modules/
+*.log
+npm-debug.log*
+
+# Git files
+.git/
+.gitignore
+.github/
+
+# Documentation (keep in repo, not in package except README)
+IMAGE_FEATURE.md
+SETUP_GUIDE.md
+CONTRIBUTING.md
+
+# Build artifacts
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Other
+smithery.yaml

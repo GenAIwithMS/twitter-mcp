@@ -57,7 +57,8 @@ The easiest way to use this MCP server is through npx (no installation required)
     }
   }
 }
-```## Configuration
+```
+## Configuration
 
 ### Step 1: Get Twitter API Credentials
 

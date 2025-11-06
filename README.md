@@ -278,7 +278,7 @@ interface PostTweetWithImageRequest {
     "created_at": "2025-11-06T12:00:00.000Z"
   }
 }
-
+```
 #### 3. `search_tweets`
 
 Search for tweets matching a query.
@@ -327,7 +327,7 @@ interface SearchResponse {
     }
   }
 }
-
+```
 ## Development
 
 ### Local Development Setup

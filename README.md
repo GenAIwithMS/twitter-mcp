@@ -235,6 +235,7 @@ interface Tweet {
     "created_at": "2025-11-06T12:00:00.000Z"
   }
 }
+```
 
 #### 2. `post_tweet_with_image`
 

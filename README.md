@@ -222,20 +222,14 @@ Once configured, you can interact with Twitter through natural language commands
 ```
 Post a tweet: "Hello World! 🌍"
 ```
-
-**Reply to a Tweet:**
-```
-Reply to tweet 1234567890 with: "Great point!"
-```
-
 ### Posting with Images
 
-> **Important**: Make sure you have configured the filesystem MCP server as shown in Step 3.
+> **Important**: Make sure you have configured the filesystem MCP server as shown in Step 4.
 
 **Tweet with Image:**
 ```
 Post this image with caption: "Check out this amazing view!"
-Image path: C:\Users\Photos\sunset.jpg
+take image from desktop
 ```
 
 **Working with Images:**
@@ -290,55 +284,10 @@ The server provides three tools that can be accessed through Claude:
 
 Post a text-only tweet.
 
-**Types:**
-```typescript
-interface PostTweetRequest {
-  text: string;              // Max 280 characters
-  reply_to_tweet_id?: string; // Optional tweet ID to reply to
-}
-
-interface Tweet {
-  id: string;
-  text: string;
-  author_id: string;
-  created_at: string;
-}
-```
-
-**Example:**
-```json
-{
-  "text": "Hello Twitter! 👋",
-  "reply_to_tweet_id": "1234567890"
-}
-
-// Response:
-{
-  "status": "success",
-  "message": "Tweet posted successfully",
-  "data": {
-    "id": "1234567891",
-    "text": "Hello Twitter! 👋",
-    "author_id": "self",
-    "created_at": "2025-11-06T12:00:00.000Z"
-  }
-}
-```
 
 #### 2. `post_tweet_with_image`
 
 Post a tweet with an attached image.
-
-**Types:**
-```typescript
-interface PostTweetWithImageRequest {
-  text: string;              // Max 280 characters
-  image_path: string;        // Absolute path to image file
-  reply_to_tweet_id?: string; // Optional tweet ID to reply to
-}
-
-// Response uses the same Tweet interface
-```
 
 **Supported Image Formats:**
 - JPEG/JPG
@@ -346,76 +295,10 @@ interface PostTweetWithImageRequest {
 - GIF (animated, max 15MB)
 - WEBP
 
-**Example:**
-```json
-// Request:
-{
-  "text": "Beautiful sunset today! 🌅",
-  "image_path": "C:\\Users\\Photos\\sunset.jpg",
-  "reply_to_tweet_id": "1234567890"
-}
-
-// Response:
-{
-  "status": "success",
-  "message": "Tweet with image posted successfully",
-  "data": {
-    "id": "1234567891",
-    "text": "Beautiful sunset today! 🌅",
-    "author_id": "self",
-    "created_at": "2025-11-06T12:00:00.000Z"
-  }
-}
-```
 #### 3. `search_tweets`
 
 Search for tweets matching a query.
 
-**Types:**
-```typescript
-interface SearchTweetsRequest {
-  query: string;           // Search query string
-  count: number;          // Number of results (10-100)
-}
-
-interface SearchResponse {
-  tweets: Tweet[];
-  meta: {
-    result_count: number;
-    next_token?: string;
-  };
-}
-```
-
-**Example:**
-```json
-// Request:
-{
-  "query": "machine learning",
-  "count": 25
-}
-
-// Response:
-{
-  "status": "success",
-  "message": "Search completed successfully",
-  "data": {
-    "tweets": [
-      {
-        "id": "1234567891",
-        "text": "Exploring machine learning concepts...",
-        "author_id": "user123",
-        "created_at": "2025-11-06T12:00:00.000Z"
-      }
-      // ... more tweets
-    ],
-    "meta": {
-      "result_count": 25,
-      "next_token": "abc123xyz"
-    }
-  }
-}
-```
 ## Development
 
 ### Local Development Setup
@@ -648,21 +531,6 @@ npm test -- --coverage
 ### Writing Tests
 
 Test files are located in `src/evals/`. Example test:
-
-```typescript
-import { describe, it, expect } from '@jest/globals';
-import { TwitterClient } from '../twitter-api';
-
-describe('TwitterClient', () => {
-  it('should post a tweet', async () => {
-    const client = new TwitterClient();
-    const tweet = await client.postTweet({
-      text: 'Test tweet'
-    });
-    expect(tweet.text).toBe('Test tweet');
-  });
-});
-```
 
 ## Contributing
 

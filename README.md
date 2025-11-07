@@ -115,6 +115,10 @@ Add the following to your `claude_desktop_config.json`:
         "ACCESS_TOKEN": "your_access_token_here",
         "ACCESS_TOKEN_SECRET": "your_access_token_secret_here"
       }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontext/filesystem-server"]
     }
   }
 }
@@ -145,6 +149,69 @@ For security, consider using environment variables in production:
 
 Close and reopen Claude Desktop completely for the changes to take effect.
 
+### Claude Desktop built-in MCP (filesystem)
+
+Claude Desktop already includes built-in MCP support for common services (including a filesystem connector in many releases). That means in most cases you do NOT need to run a separate `filesystem` MCP server to let Claude access local files and images.
+
+What this means for you:
+
+- Convenience: For most users it's easiest to use the built-in MCP — there's no extra process to install or run.
+- Permissions: Claude Desktop will ask for permission to access files or folders. Use the app's UI to grant access to the directories containing images.
+- External server (optional): If you prefer more control (restricting which folders are exposed, or running in an environment where the built-in connector is unavailable), you can run an external filesystem MCP server instead and connect to it from Claude.
+
+Which approach to choose (recommended):
+
+- Beginner / one-off usage: Use the built-in MCP in Claude Desktop. It's simpler and requires minimal configuration.
+- Advanced / production / security-conscious setups: Use an external filesystem MCP server so you can restrict the exact folders served and run under a separate account. This is useful if you share a machine or want fine-grained auditability.
+
+Example — using built-in MCP (no extra filesystem entry needed):
+
+```json
+{
+  "mcpServers": {
+    "twitter": {
+      "command": "npx",
+      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
+      "env": {
+        "API_KEY": "${TWITTER_API_KEY}",
+        "API_SECRET_KEY": "${TWITTER_API_SECRET_KEY}",
+        "ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
+        "ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
+      }
+    }
+  }
+}
+```
+
+Example — using an external filesystem MCP (optional):
+
+```json
+{
+  "mcpServers": {
+    "twitter": {
+      "command": "npx",
+      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
+      "env": { /* twitter env */ }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontext/filesystem-server"],
+      "env": {
+        "ROOT_DIRS": "C:\\Users\\YourName\\Pictures;./images"
+      }
+    }
+  }
+}
+```
+
+Notes and tips:
+
+- If you use the built-in MCP, confirm that Claude Desktop has permission to read the folders where your images are stored.
+- When using an external filesystem MCP, prefer absolute paths or a small set of root directories to reduce accidental exposure.
+- The `twitter-mcp` server expects image paths to point to local files that are readable by the MCP that serves the filesystem.
+
+With this guidance in place, you can pick the approach that fits your workflow: built-in for convenience, external for stricter control.
+
 ## Usage
 
 Once configured, you can interact with Twitter through natural language commands to Claude.
@@ -163,22 +230,43 @@ Reply to tweet 1234567890 with: "Great point!"
 
 ### Posting with Images
 
+> **Important**: Make sure you have configured the filesystem MCP server as shown in Step 3.
+
 **Tweet with Image:**
 ```
 Post this image with caption: "Check out this amazing view!"
 Image path: C:\Users\Photos\sunset.jpg
 ```
 
-**Supported Image Formats:**
-- JPEG/JPG
-- PNG
-- GIF
-- WEBP
+**Working with Images:**
 
-**Image Requirements:**
-- Maximum file size: 5MB (images), 15MB (GIFs)
-- Absolute file paths required
-- File must exist and be readable
+1. **File Access**:
+  - The filesystem MCP server must be configured to access local images
+  - Images must be in an accessible location on your computer
+  - Both absolute and relative paths are supported
+
+2. **Path Formats**:
+  - Windows: `C:\Users\YourName\Pictures\image.jpg`
+  - macOS: `/Users/YourName/Pictures/image.jpg`
+  - Linux: `/home/yourname/pictures/image.jpg`
+  - Relative: `./images/photo.jpg` (relative to your working directory)
+
+3. **Supported Image Formats**:
+  - JPEG/JPG (`image/jpeg`)
+  - PNG (`image/png`)
+  - GIF (`image/gif`)
+  - WEBP (`image/webp`)
+
+4. **Image Requirements**:
+  - Maximum file size: 5MB for static images, 15MB for GIFs
+  - Recommended dimensions: 1200x675 pixels (16:9 aspect ratio)
+  - File permissions: Must be readable by the Claude Desktop app
+
+5. **Best Practices**:
+  - Use relative paths when possible for portability
+  - Keep images in a dedicated folder for better organization
+  - Consider image optimization for better upload performance
+  - Test with small images first
 
 ### Searching Tweets
 

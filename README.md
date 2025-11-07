@@ -149,7 +149,7 @@ For security, consider using environment variables in production:
 
 Close and reopen Claude Desktop completely for the changes to take effect.
 
-### Claude Desktop built-in MCP (filesystem)
+### Claude Desktop built in MCP (filesystem)
 
 Claude Desktop already includes built-in MCP support for common services (including a filesystem connector in many releases). That means in most cases you do NOT need to run a separate `filesystem` MCP server to let Claude access local files and images.
 
@@ -164,7 +164,7 @@ Which approach to choose (recommended):
 - Beginner / one-off usage: Use the built-in MCP in Claude Desktop. It's simpler and requires minimal configuration.
 - Advanced / production / security-conscious setups: Use an external filesystem MCP server so you can restrict the exact folders served and run under a separate account. This is useful if you share a machine or want fine-grained auditability.
 
-Example — using built-in MCP (no extra filesystem entry needed):
+Example using built in MCP (no extra filesystem needed) just use this:
 
 ```json
 {
@@ -183,7 +183,7 @@ Example — using built-in MCP (no extra filesystem entry needed):
 }
 ```
 
-Example — using an external filesystem MCP (optional):
+Example using an external filesystem MCP (optional):
 
 ```json
 {
@@ -191,13 +191,18 @@ Example — using an external filesystem MCP (optional):
     "twitter": {
       "command": "npx",
       "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": { /* twitter env */ }
+      "env": {
+        "API_KEY": "${TWITTER_API_KEY}",
+        "API_SECRET_KEY": "${TWITTER_API_SECRET_KEY}",
+        "ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
+        "ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
+      }
     },
     "filesystem": {
       "command": "npx",
       "args": ["-y", "@modelcontext/filesystem-server"],
       "env": {
-        "ROOT_DIRS": "C:\\Users\\YourName\\Pictures;./images"
+        "ROOT_DIRS": "path\\to the dir\\You want to\\give acess;./images"
       }
     }
   }

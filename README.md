@@ -110,15 +110,11 @@ Add the following to your `claude_desktop_config.json`:
       "command": "npx",
       "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
       "env": {
-        "API_KEY": "your_api_key_here",
-        "API_SECRET_KEY": "your_api_secret_key_here",
-        "ACCESS_TOKEN": "your_access_token_here",
-        "ACCESS_TOKEN_SECRET": "your_access_token_secret_here"
+        "API_KEY": "your_api_key",
+        "API_SECRET_KEY": "your_api_secret_key",
+        "ACCESS_TOKEN": "your_access_token",
+        "ACCESS_TOKEN_SECRET": "your_access_token_secret"
       }
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontext/filesystem-server"]
     }
   }
 }
@@ -149,74 +145,71 @@ For security, consider using environment variables in production:
 
 Close and reopen Claude Desktop completely for the changes to take effect.
 
-### Claude Desktop built in MCP (filesystem)
+## Setting Up Filesystem Access in Claude Desktop
 
-Claude Desktop already includes built-in MCP support for common services (including a filesystem connector in many releases). That means in most cases you do NOT need to run a separate `filesystem` MCP server to let Claude access local files and images.
+Claude Desktop needs permission to access files and folders on your computer. Follow these simple steps to grant access:
 
-What this means for you:
+### Step-by-Step Instructions
 
-- Convenience: For most users it's easiest to use the built-in MCP — there's no extra process to install or run.
-- Permissions: Claude Desktop will ask for permission to access files or folders. Use the app's UI to grant access to the directories containing images.
-- External server (optional): If you prefer more control (restricting which folders are exposed, or running in an environment where the built-in connector is unavailable), you can run an external filesystem MCP server instead and connect to it from Claude.
+1. **Open Claude Desktop Settings**
+   - Click on your profile icon or the settings gear in Claude Desktop
+   - Navigate to **Settings**
 
-Which approach to choose (recommended):
+2. **Go to Connectors**
+   - In the Settings menu, find and click on **Connectors**
 
-- Beginner / one-off usage: Use the built-in MCP in Claude Desktop. It's simpler and requires minimal configuration.
-- Advanced / production / security-conscious setups: Use an external filesystem MCP server so you can restrict the exact folders served and run under a separate account. This is useful if you share a machine or want fine-grained auditability.
+3. **Enable Filesystem Access**
+   - Click on **Browse Connectors**
+   - Select **Desktop Extensions**
+   - Find and click on **Filesystem**
 
-Example using built in MCP (no extra filesystem needed) just use this:
+4. **Add Directory Path**
+   - Enter the full path to the directory you want Claude to access
+   - **Examples**:
+     - Windows: `C:\Users\YourName\TwitterImages`
+     - macOS: `/Users/yourname/TwitterImages`
+     - Linux: `/home/yourname/TwitterImages`
+   
+   💡 **Tip**: You can add multiple directories by repeating this step
 
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "API_KEY": "${TWITTER_API_KEY}",
-        "API_SECRET_KEY": "${TWITTER_API_SECRET_KEY}",
-        "ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
-        "ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
-      }
-    }
-  }
-}
-```
+5. **Save and Restart**
+   - Click **Save** or **Apply**
+   - **Close Claude Desktop completely**
+   - **Reopen Claude Desktop** for changes to take effect
 
-Example using an external filesystem MCP (optional):
+### Verification
 
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "API_KEY": "${TWITTER_API_KEY}",
-        "API_SECRET_KEY": "${TWITTER_API_SECRET_KEY}",
-        "ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
-        "ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
-      }
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontext/filesystem-server"],
-      "env": {
-        "ROOT_DIRS": "path\\to the dir\\You want to\\give acess;./images"
-      }
-    }
-  }
-}
-```
+To verify filesystem access is working:
+1. Ask Claude: "List files in the directory I gave you access to"
+2. Or provide a specific path: "Show me files in `C:\Users\YourName\TwitterImages`"
 
-Notes and tips:
+If Claude can see your files, you're all set! 🎉
 
-- If you use the built-in MCP, confirm that Claude Desktop has permission to read the folders where your images are stored.
-- When using an external filesystem MCP, prefer absolute paths or a small set of root directories to reduce accidental exposure.
-- The `twitter-mcp` server expects image paths to point to local files that are readable by the MCP that serves the filesystem.
+### Common Paths to Consider
 
-With this guidance in place, you can pick the approach that fits your workflow: built-in for convenience, external for stricter control.
+- **For Twitter images**: Create a dedicated folder like:
+  - `C:\TwitterImages` (Windows)
+  - `~/TwitterImages` (macOS/Linux)
+  
+- **For documents**: 
+  - `C:\Users\YourName\Documents` (Windows)
+  - `~/Documents` (macOS/Linux)
 
+### Troubleshooting
+
+**Can't find Connectors in Settings?**
+- Make sure you're using the latest version of Claude Desktop
+- Try restarting the application
+
+**Path not working?**
+- Use the full absolute path (complete path from root)
+- Avoid spaces in folder names, or use quotes around the path
+- Check that the directory actually exists on your computer
+
+**Changes not taking effect?**
+- Make sure you completely closed Claude Desktop (check system tray/menu bar)
+- Wait a few seconds before reopening
+- Restart your computer if issues persist
 ## Usage
 
 Once configured, you can interact with Twitter through natural language commands to Claude.

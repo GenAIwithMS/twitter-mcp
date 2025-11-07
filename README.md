@@ -141,15 +141,12 @@ For security, consider using environment variables in production:
 
 **Important:** Replace the placeholder values with your actual Twitter API credentials.
 
-### Step 4: Restart Claude Desktop
 
-Close and reopen Claude Desktop completely for the changes to take effect.
-
-## Setting Up Filesystem Access in Claude Desktop
+### step 4: Setting Up Filesystem Access in Claude Desktop
 
 Claude Desktop needs permission to access files and folders on your computer. Follow these simple steps to grant access:
 
-### Step-by-Step Instructions
+#### Step-by-Step Instructions
 
 1. **Open Claude Desktop Settings**
    - Click on your profile icon or the settings gear in Claude Desktop
@@ -177,7 +174,7 @@ Claude Desktop needs permission to access files and folders on your computer. Fo
    - **Close Claude Desktop completely**
    - **Reopen Claude Desktop** for changes to take effect
 
-### Verification
+#### Verification
 
 To verify filesystem access is working:
 1. Ask Claude: "List files in the directory I gave you access to"
@@ -185,7 +182,7 @@ To verify filesystem access is working:
 
 If Claude can see your files, you're all set! 🎉
 
-### Common Paths to Consider
+#### Common Paths to Consider
 
 - **For Twitter images**: Create a dedicated folder like:
   - `C:\TwitterImages` (Windows)
@@ -195,7 +192,7 @@ If Claude can see your files, you're all set! 🎉
   - `C:\Users\YourName\Documents` (Windows)
   - `~/Documents` (macOS/Linux)
 
-### Troubleshooting
+#### Troubleshooting
 
 **Can't find Connectors in Settings?**
 - Make sure you're using the latest version of Claude Desktop
@@ -210,6 +207,11 @@ If Claude can see your files, you're all set! 🎉
 - Make sure you completely closed Claude Desktop (check system tray/menu bar)
 - Wait a few seconds before reopening
 - Restart your computer if issues persist
+
+### Step 5: Restart Claude Desktop
+
+Close and reopen Claude Desktop completely for the changes to take effect.
+
 ## Usage
 
 Once configured, you can interact with Twitter through natural language commands to Claude.

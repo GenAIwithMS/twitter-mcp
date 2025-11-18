@@ -1,0 +1,18 @@
+
+
+
+
+"twitter": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@muhammadsiddiq/twitter-mcp"
+      ],
+      "env": {
+        "API_KEY": "dyvQxvsGO4XtAGZNP5BFeICkB",
+        "API_SECRET_KEY": "2qyxccMY3Sw17tdOZVjjAaWJN67QByRMqhpZlv6keluROVIAr1",
+        "ACCESS_TOKEN": "1961383712282873857-s7xZDtcldFIrQTWCkKEutaYHdwX9qS",
+        "ACCESS_TOKEN_SECRET": "VXazl3I5TzfzjPTvHGInphOfRuYfg0tpP99RvCu3QxfDv"
+      }
+    }
+  }

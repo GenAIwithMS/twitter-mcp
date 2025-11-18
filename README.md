@@ -24,7 +24,23 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
   - [Posting Tweets](#posting-tweets)
   - [Posting with Images](#posting-with-images)
   - [Searching Tweets](#searching-tweets)
-- [API Reference](#api-reference)
+  ## Development
+
+  **Types:**
+  ```typescript
+  interface SearchTweetsRequest {
+    query: string;           // Search query string
+    count: number;          // Number of results (10-100)
+  }
+
+  interface SearchResponse {
+    tweets: Tweet[];
+    meta: {
+      result_count: number;
+      next_token?: string;
+    };
+  }
+  ```
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)

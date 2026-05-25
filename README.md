@@ -12,6 +12,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🐦 **Post Tweets** - Share your thoughts with the world
 - 🖼️ **Image Support** - Post tweets with images (JPG, PNG, GIF, WEBP)
 - 🔍 **Search Tweets** - Find and analyze tweets by query
+- 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
 - ⚡ **Rate Limiting** - Built-in protection against API limits
@@ -155,7 +156,39 @@ For security, consider using environment variables in production:
 }
 ```
 
-**Important:** Replace the placeholder values with your actual Twitter API credentials.
+Optional read-only search through Hermes Tweet/Xquik:
+
+```json
+{
+  "mcpServers": {
+    "twitter": {
+      "command": "npx",
+      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
+      "env": {
+        "XQUIK_API_KEY": "${XQUIK_API_KEY}",
+        "XQUIK_BASE_URL": "https://xquik.com"
+      }
+    }
+  }
+}
+```
+
+#### Getting an Xquik / Hermes Tweet token
+
+1. Sign in at [dashboard.xquik.com](https://dashboard.xquik.com/).
+2. Open [Account > API Keys](https://dashboard.xquik.com/en/account?tab=api-keys).
+3. Create an API key for this MCP server and copy it once.
+4. Store that value as `XQUIK_API_KEY` in your Claude Desktop MCP config or shell environment.
+5. If your deployment uses the Hermes Tweet naming, set the same value as `HERMES_TWEET_API_KEY` instead.
+6. Leave `XQUIK_BASE_URL` unset unless your team runs a compatible non-default deployment.
+7. Restart Claude Desktop and call `search_tweets` to verify read-only search.
+
+Keep the key out of Git, chat prompts, screenshots, and shared config files. The key only changes `search_tweets`; posting and replying still use the Twitter OAuth variables below.
+
+When `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set, `search_tweets` uses
+Xquik. Posting tools still require the Twitter OAuth variables.
+
+**Important:** Replace the placeholder values with your actual Twitter API credentials or Xquik API key.
 
 ### Step 4: Restart Claude Desktop
 
@@ -315,6 +348,10 @@ Post a tweet with an attached image.
 #### 3. `search_tweets`
 
 Search for tweets matching a query.
+
+Set `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` to route search through
+Hermes Tweet/Xquik. Without those variables, search uses the configured Twitter
+API credentials.
 
 **Types:**
 ```typescript
@@ -550,14 +587,18 @@ To see detailed logs, check:
 
 ## Environment Variables
 
-The server requires the following environment variables:
+Posting tools require Twitter OAuth credentials. `search_tweets` can use either
+Twitter OAuth credentials or the optional Hermes Tweet/Xquik read-only backend.
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `API_KEY` | Twitter API Key | Yes |
-| `API_SECRET_KEY` | Twitter API Secret Key | Yes |
-| `ACCESS_TOKEN` | Twitter Access Token | Yes |
-| `ACCESS_TOKEN_SECRET` | Twitter Access Token Secret | Yes |
+| `API_KEY` | Twitter API Key | For posting and Twitter API search |
+| `API_SECRET_KEY` | Twitter API Secret Key | For posting and Twitter API search |
+| `ACCESS_TOKEN` | Twitter Access Token | For posting and Twitter API search |
+| `ACCESS_TOKEN_SECRET` | Twitter Access Token Secret | For posting and Twitter API search |
+| `XQUIK_API_KEY` | Optional Hermes Tweet/Xquik key for `search_tweets` | No |
+| `HERMES_TWEET_API_KEY` | Optional alias for `XQUIK_API_KEY` | No |
+| `XQUIK_BASE_URL` | Optional Xquik base URL, defaults to `https://xquik.com` | No |
 
 ## Security Best Practices
 
@@ -619,8 +660,8 @@ Contributions are welcome! Please follow these steps:
 4. **Test & Build:**
    ```bash
    npm install
-   npm test
    npm run build
+   npm test
    ```
 
 5. **Commit & Push:**

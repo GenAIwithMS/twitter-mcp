@@ -1,10 +1,11 @@
 import { TwitterApi } from 'twitter-api-v2';
 import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, Tweet } from './types.js';
+import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export class TwitterClient {
-  private client: TwitterApi;
+  private client?: TwitterApi;
 
   constructor() {
     const apiKey = process.env.API_KEY;
@@ -12,22 +13,20 @@ export class TwitterClient {
     const accessToken = process.env.ACCESS_TOKEN;
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
-    if (!apiKey || !apiSecretKey || !accessToken || !accessTokenSecret) {
-      throw new Error('Missing Twitter API credentials');
+    if (apiKey && apiSecretKey && accessToken && accessTokenSecret) {
+      this.client = new TwitterApi({
+        appKey: apiKey,
+        appSecret: apiSecretKey,
+        accessToken: accessToken,
+        accessSecret: accessTokenSecret,
+      });
     }
-
-    this.client = new TwitterApi({
-      appKey: apiKey,
-      appSecret: apiSecretKey,
-      accessToken: accessToken,
-      accessSecret: accessTokenSecret,
-    });
   }
 
   async postTweet(request: PostTweetRequest): Promise<Tweet> {
     const { text, reply_to_tweet_id } = request;
     
-    const tweet = await this.client.v2.tweet({
+    const tweet = await this.getTwitterClient().v2.tweet({
       text,
       reply: reply_to_tweet_id ? { in_reply_to_tweet_id: reply_to_tweet_id } : undefined,
     });
@@ -49,7 +48,7 @@ export class TwitterClient {
 
     const mediaId = await this.uploadMedia(image_path);
 
-    const tweet = await this.client.v2.tweet({
+    const tweet = await this.getTwitterClient().v2.tweet({
       text,
       media: { media_ids: [mediaId] },
       reply: reply_to_tweet_id ? { in_reply_to_tweet_id: reply_to_tweet_id } : undefined,
@@ -67,7 +66,7 @@ export class TwitterClient {
     const mimeType = this.getMimeType(filePath);
     const data = fs.readFileSync(filePath);
     
-    const uploadClient = this.client.v1;
+    const uploadClient = this.getTwitterClient().v1;
     const mediaId = await uploadClient.uploadMedia(data, { mimeType });
     
     return mediaId;
@@ -92,9 +91,13 @@ export class TwitterClient {
   }
 
   async searchTweets(request: SearchTweetsRequest) {
+    if (hasXquikConfig()) {
+      return await searchTweetsWithXquik(request);
+    }
+
     const { query, count } = request;
     
-    const result = await this.client.v2.search({
+    const result = await this.getTwitterClient().v2.search({
       query,
       max_results: count,
       'tweet.fields': ['author_id', 'created_at'],
@@ -112,5 +115,13 @@ export class TwitterClient {
         next_token: result.data.meta.next_token,
       },
     };
+  }
+
+  private getTwitterClient(): TwitterApi {
+    if (!this.client) {
+      throw new Error('Missing Twitter API credentials');
+    }
+
+    return this.client;
   }
 }

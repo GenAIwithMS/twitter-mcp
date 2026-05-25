@@ -173,20 +173,20 @@ Optional read-only search through Hermes Tweet/Xquik:
 }
 ```
 
-When `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set, `search_tweets` uses
-Xquik. Posting tools still require the Twitter OAuth variables.
-
 #### Getting an Xquik / Hermes Tweet token
 
-1. Open [Xquik](https://xquik.com) and create an account or sign in.
-2. Open the [Xquik dashboard](https://dashboard.xquik.com).
-3. Go to the API keys area in the dashboard.
-4. Create a new API key for this MCP server.
-5. Copy the key and store it as `XQUIK_API_KEY` in your Claude Desktop MCP config.
-6. Use `HERMES_TWEET_API_KEY` instead if your team standardizes on the Hermes Tweet variable name.
-7. Leave `XQUIK_BASE_URL` unset unless your team runs a compatible non-default deployment.
+1. Sign in at [dashboard.xquik.com](https://dashboard.xquik.com/).
+2. Open [Account > API Keys](https://dashboard.xquik.com/en/account?tab=api-keys).
+3. Create an API key for this MCP server and copy it once.
+4. Store that value as `XQUIK_API_KEY` in your Claude Desktop MCP config or shell environment.
+5. If your deployment uses the Hermes Tweet naming, set the same value as `HERMES_TWEET_API_KEY` instead.
+6. Leave `XQUIK_BASE_URL` unset unless your team runs a compatible non-default deployment.
+7. Restart Claude Desktop and call `search_tweets` to verify read-only search.
 
-Keep the token private. Do not commit it to this repository or paste it into issue comments.
+Keep the key out of Git, chat prompts, screenshots, and shared config files. The key only changes `search_tweets`; posting and replying still use the Twitter OAuth variables below.
+
+When `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set, `search_tweets` uses
+Xquik. Posting tools still require the Twitter OAuth variables.
 
 **Important:** Replace the placeholder values with your actual Twitter API credentials or Xquik API key.
 

@@ -1,6 +1,7 @@
 import { TwitterApi } from 'twitter-api-v2';
 import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
+import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -93,6 +94,10 @@ export class TwitterClient {
   async searchTweets(request: SearchTweetsRequest) {
     if (hasXquikConfig()) {
       return await searchTweetsWithXquik(request);
+    }
+
+    if (hasGetXAPIConfig()) {
+      return await searchTweetsWithGetXAPI(request);
     }
 
     const { query, count } = request;

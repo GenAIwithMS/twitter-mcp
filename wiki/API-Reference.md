@@ -24,6 +24,7 @@ This MCP exposes the following tools for use by Claude:
   - `count` (number, 10-100)
 - Backend:
   - Uses Hermes Tweet/Xquik when `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set.
+  - Uses GetXAPI when `GETXAPI_API_KEY` is set.
   - Falls back to the configured Twitter API credentials otherwise.
 
 Responses are returned as MCP-formatted content objects. See the code in `src/` for exact shapes and types.

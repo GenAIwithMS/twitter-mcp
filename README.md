@@ -25,25 +25,10 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
   - [Posting Tweets](#posting-tweets)
   - [Posting with Images](#posting-with-images)
   - [Searching Tweets](#searching-tweets)
-  ## Development
-
-  **Types:**
-  ```typescript
-  interface SearchTweetsRequest {
-    query: string;           // Search query string
-    count: number;          // Number of results (10-100)
-  }
-
-  interface SearchResponse {
-    tweets: Tweet[];
-    meta: {
-      result_count: number;
-      next_token?: string;
-    };
-  }
-  ```
+- [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
+- [Environment Variables](#environment-variables)
 - [License](#license)
 
 ## Installation
@@ -57,24 +42,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 
 ### Quick Start
 
-The easiest way to use this MCP server is through npx (no installation required):
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "API_KEY": "your_api_key",
-        "API_SECRET_KEY": "your_api_secret_key",
-        "ACCESS_TOKEN": "your_access_token",
-        "ACCESS_TOKEN_SECRET": "your_access_token_secret"
-      }
-    }
-  }
-}
-```
+The easiest way to use this MCP server is through npx (no installation required). See [Configuration](#configuration) for the setup instructions.
 ## Configuration
 
 ### Step 1: Get Twitter API Credentials
@@ -130,48 +98,26 @@ Add the following to your `claude_desktop_config.json`:
         "API_KEY": "your_api_key",
         "API_SECRET_KEY": "your_api_secret_key",
         "ACCESS_TOKEN": "your_access_token",
-        "ACCESS_TOKEN_SECRET": "your_access_token_secret"
-      }
-    }
-  }
-}
-```
-
-For security, consider using environment variables in production:
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "API_KEY": "${TWITTER_API_KEY}",
-        "API_SECRET_KEY": "${TWITTER_API_SECRET_KEY}",
-        "ACCESS_TOKEN": "${TWITTER_ACCESS_TOKEN}",
-        "ACCESS_TOKEN_SECRET": "${TWITTER_ACCESS_TOKEN_SECRET}"
-      }
-    }
-  }
-}
-```
-
-Optional read-only search through Hermes Tweet/Xquik:
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
+        "ACCESS_TOKEN_SECRET": "your_access_token_secret",
         "XQUIK_API_KEY": "${XQUIK_API_KEY}",
-        "XQUIK_BASE_URL": "https://xquik.com"
+        "XQUIK_BASE_URL": "https://xquik.com",
+        "GETXAPI_API_KEY": "${GETXAPI_API_KEY}",
+        "GETXAPI_BASE_URL": "https://api.getxapi.com"
       }
     }
   }
 }
 ```
+
+**Required** for posting and Twitter API search: `API_KEY`, `API_SECRET_KEY`, `ACCESS_TOKEN`, `ACCESS_TOKEN_SECRET`.
+
+**Optional** read-only search backends:
+- **Hermes Tweet/Xquik**: `XQUIK_API_KEY` (or `HERMES_TWEET_API_KEY` as alias), `XQUIK_BASE_URL` (defaults to `https://xquik.com`)
+- **GetXAPI**: `GETXAPI_API_KEY`, `GETXAPI_BASE_URL` (defaults to `https://api.getxapi.com`)
+
+Resolution order for `search_tweets`: Xquik (via `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY`), then GetXAPI (via `GETXAPI_API_KEY`), then the configured Twitter API credentials.
+
+For security, consider using environment variable references (`${VAR_NAME}`) instead of hardcoded values in production.
 
 #### Getting an Xquik / Hermes Tweet token
 
@@ -183,26 +129,7 @@ Optional read-only search through Hermes Tweet/Xquik:
 6. Leave `XQUIK_BASE_URL` unset unless your team runs a compatible non-default deployment.
 7. Restart Claude Desktop and call `search_tweets` to verify read-only search.
 
-Keep the key out of Git, chat prompts, screenshots, and shared config files. The key only changes `search_tweets`; posting and replying still use the Twitter OAuth variables below.
-
-When `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set, `search_tweets` uses
-Xquik. Posting tools still require the Twitter OAuth variables.
-
-Optional read-only search through GetXAPI:
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "GETXAPI_API_KEY": "${GETXAPI_API_KEY}"
-      }
-    }
-  }
-}
-```
+Keep the key out of Git, chat prompts, screenshots, and shared config files. The key only changes `search_tweets`; posting and replying still use the Twitter OAuth variables.
 
 #### Getting a GetXAPI token
 
@@ -211,10 +138,6 @@ Optional read-only search through GetXAPI:
 3. Store that value as `GETXAPI_API_KEY` in your Claude Desktop MCP config or shell environment.
 4. Leave `GETXAPI_BASE_URL` unset unless your team runs a compatible non-default deployment.
 5. Restart Claude Desktop and call `search_tweets` to verify read-only search.
-
-Resolution order for `search_tweets`: Xquik (`XQUIK_API_KEY` or `HERMES_TWEET_API_KEY`), then GetXAPI (`GETXAPI_API_KEY`), then the configured Twitter API credentials.
-
-**Important:** Replace the placeholder values with your actual Twitter API credentials, Xquik API key, or GetXAPI key.
 
 ### Step 4: Restart Claude Desktop
 
@@ -360,10 +283,18 @@ The server provides three tools that can be accessed through Claude:
 
 Post a text-only tweet.
 
+**Parameters:**
+- `text` (string) — Tweet content
+- `reply_to_tweet_id` (string, optional) — ID of a tweet to reply to
 
 #### 2. `post_tweet_with_image`
 
 Post a tweet with an attached image.
+
+**Parameters:**
+- `text` (string) — Tweet content
+- `image_path` (string) — Local path to image (absolute or relative)
+- `reply_to_tweet_id` (string, optional) — ID of a tweet to reply to
 
 **Supported Image Formats:**
 - JPEG/JPG
@@ -670,7 +601,7 @@ Contributions are welcome! Please follow these steps:
 
 1. **Fork & Clone:**
    ```bash
-   git clone https://github.com/EnesCinr/twitter-mcp.git
+   git clone https://github.com/genaiwithms/twitter-mcp.git
    cd twitter-mcp
    ```
 

@@ -1,9 +1,11 @@
-name: Publish Package to npm
+name: Publish Package on Version Update
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'package.json' # 1. Only trigger if package.json was modified
 
 jobs:
   publish:
@@ -18,12 +20,36 @@ jobs:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
+      # 2. Check if this version already exists on npm registry
+      - name: Check if version is new
+        id: check-version
+        run: |
+          # Extract version from package.json
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          echo "Local version is $LOCAL_VERSION"
+          
+          # Fetch the latest published version from npm. 
+          # If the package is brand new, default to 0.0.0
+          NPM_VERSION=$(npm view $PACKAGE_NAME version 2>/dev/null || echo "0.0.0")
+          echo "NPM registry version is $NPM_VERSION"
+          
+          if [ "$LOCAL_VERSION" = "$NPM_VERSION" ]; then
+            echo "Version has not changed. Skipping publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version detected! Preparing to publish..."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install Dependencies & Build
+        if: steps:check-version.outputs.should_publish == 'true'
         run: |
           npm install
           npm run build
 
       - name: Publish to npm
+        if: steps:check-version.outputs.should_publish == 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Optional Hermes Tweet/Xquik backend for the `search_tweets` tool.
 - Node test coverage for Xquik search response mapping and API error handling.
+- Optional GetXAPI backend for the `search_tweets` tool.
+- Node test coverage for GetXAPI search response mapping and API error handling.
 
 ## [0.3.0] - 2025-11-06
 

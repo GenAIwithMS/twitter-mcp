@@ -188,7 +188,33 @@ Keep the key out of Git, chat prompts, screenshots, and shared config files. The
 When `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` is set, `search_tweets` uses
 Xquik. Posting tools still require the Twitter OAuth variables.
 
-**Important:** Replace the placeholder values with your actual Twitter API credentials or Xquik API key.
+Optional read-only search through GetXAPI:
+
+```json
+{
+  "mcpServers": {
+    "twitter": {
+      "command": "npx",
+      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
+      "env": {
+        "GETXAPI_API_KEY": "${GETXAPI_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+#### Getting a GetXAPI token
+
+1. Sign in at [getxapi.com](https://getxapi.com/).
+2. Create an API key for this MCP server and copy it once.
+3. Store that value as `GETXAPI_API_KEY` in your Claude Desktop MCP config or shell environment.
+4. Leave `GETXAPI_BASE_URL` unset unless your team runs a compatible non-default deployment.
+5. Restart Claude Desktop and call `search_tweets` to verify read-only search.
+
+Resolution order for `search_tweets`: Xquik (`XQUIK_API_KEY` or `HERMES_TWEET_API_KEY`), then GetXAPI (`GETXAPI_API_KEY`), then the configured Twitter API credentials.
+
+**Important:** Replace the placeholder values with your actual Twitter API credentials, Xquik API key, or GetXAPI key.
 
 ### Step 4: Restart Claude Desktop
 
@@ -350,8 +376,8 @@ Post a tweet with an attached image.
 Search for tweets matching a query.
 
 Set `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` to route search through
-Hermes Tweet/Xquik. Without those variables, search uses the configured Twitter
-API credentials.
+Hermes Tweet/Xquik. Set `GETXAPI_API_KEY` to route search through GetXAPI.
+Without those variables, search uses the configured Twitter API credentials.
 
 **Types:**
 ```typescript
@@ -587,8 +613,9 @@ To see detailed logs, check:
 
 ## Environment Variables
 
-Posting tools require Twitter OAuth credentials. `search_tweets` can use either
-Twitter OAuth credentials or the optional Hermes Tweet/Xquik read-only backend.
+Posting tools require Twitter OAuth credentials. `search_tweets` can use
+Twitter OAuth credentials, the optional Hermes Tweet/Xquik read-only backend,
+or the optional GetXAPI read-only backend.
 
 | Variable | Description | Required |
 |----------|-------------|----------|
@@ -599,6 +626,8 @@ Twitter OAuth credentials or the optional Hermes Tweet/Xquik read-only backend.
 | `XQUIK_API_KEY` | Optional Hermes Tweet/Xquik key for `search_tweets` | No |
 | `HERMES_TWEET_API_KEY` | Optional alias for `XQUIK_API_KEY` | No |
 | `XQUIK_BASE_URL` | Optional Xquik base URL, defaults to `https://xquik.com` | No |
+| `GETXAPI_API_KEY` | Optional GetXAPI key for `search_tweets` | No |
+| `GETXAPI_BASE_URL` | Optional GetXAPI base URL, defaults to `https://api.getxapi.com` | No |
 
 ## Security Best Practices
 

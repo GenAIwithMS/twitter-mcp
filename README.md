@@ -1,11 +1,28 @@
+<div align="center">
+
 # Twitter MCP Server
 
-A Model Context Protocol (MCP) server that enables seamless interaction with Twitter/X platform. Post tweets, share images, and search Twitter directly through Claude AI.
+Connect AI assistants to X (Twitter) using the Model Context Protocol (MCP).
+
+Post tweets • Upload images • Search tweets • Reply to conversations
 
 [![npm version](https://img.shields.io/npm/v/@muhammadsiddiq/twitter-mcp.svg)](https://www.npmjs.com/package/@muhammadsiddiq/twitter-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node Version](https://img.shields.io/node/v/@muhammadsiddiq/twitter-mcp)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![GitHub Stars](https://img.shields.io/github/stars/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/network/members)
+
+[Quick Start](#quick-start) •
+[Features](#features) •
+[Documentation](#usage) •
+[Contributing](./CONTRIBUTING.md)
+
+</div>
+
+---
+
+A Model Context Protocol (MCP) server that enables seamless interaction with Twitter/X through AI assistants such as Claude Desktop.
 
 ## Features
 
@@ -16,6 +33,30 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
 - ⚡ **Rate Limiting** - Built-in protection against API limits
+
+## Why Twitter MCP?
+
+Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through natural language.
+
+### Benefits
+
+- 🚀 Zero installation using NPX
+- 🤖 Works with Claude Desktop and MCP-compatible clients
+- 🐦 Post tweets directly from AI conversations
+- 🖼️ Upload images with tweets
+- 🔍 Search Twitter using multiple backends
+- 🔐 Secure OAuth authentication
+- ⚡ Built-in rate limiting and validation
+- 🛠️ Open-source and TypeScript powered
+
+### Perfect For
+
+- Content creators
+- Social media managers
+- AI agent developers
+- Marketing teams
+- Researchers and analysts
+- MCP enthusiasts
 
 ## Table of Contents
 
@@ -648,9 +689,14 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `refactor:` Code refactoring
 - `chore:` Maintenance
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Contributors
+
+Thanks to everyone who contributes to Twitter MCP Server ❤️
+
+<a href="https://github.com/GenAIwithMS/twitter-mcp/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=GenAIwithMS/twitter-mcp" />
+</a>
 
 ## Support
 
@@ -660,10 +706,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built with [Model Context Protocol SDK](https://github.com/modelcontextprotocol)
-- Uses [twitter-api-v2](https://github.com/PLhery/node-twitter-api-v2) library
-- Inspired by the Claude AI ecosystem
+- Model Context Protocol ecosystem
+- Claude Desktop community
+- twitter-api-v2 maintainers
+- Xquik team
+- GetXAPI team
+- Open-source contributors
 
----
+Special thanks to all community contributors who help improve this project.
 
-**Made with ❤️ by [genaiwithms](https://github.com/genaiwithms)**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+

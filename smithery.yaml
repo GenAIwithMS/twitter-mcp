@@ -10,19 +10,26 @@ startCommand:
       - apiSecretKey
       - accessToken
       - accessTokenSecret
-    properties:
-      apiKey:
-        type: string
-        description: Twitter API key.
-      apiSecretKey:
-        type: string
-        description: Twitter API secret key.
-      accessToken:
-        type: string
-        description: Twitter access token.
-      accessTokenSecret:
-        type: string
-        description: Twitter access token secret.
+  properties:
+    apiKey:
+      type: string
+      title: Twitter API Key
+      description: Twitter/X API Key
+
+    apiSecretKey:
+      type: string
+      title: Twitter API Secret Key
+      description: Twitter/X API Secret Key
+
+    accessToken:
+      type: string
+      title: Twitter Access Token
+      description: Twitter/X Access Token
+
+    accessTokenSecret:
+      type: string
+      title: Twitter Access Token Secret
+      description: Twitter/X Access Token Secret
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
     |-

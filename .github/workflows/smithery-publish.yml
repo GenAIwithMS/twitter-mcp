@@ -21,15 +21,27 @@ jobs:
       - name: Install All Dependencies
         run: npm install
 
-      - name: Compile TypeScript and Build Bundle
+      - name: Compile and Bundle via esbuild
         run: |
           npm run build
           npm run bundle
 
-      # FIXED: Using zip command (-r for recursive tracking) to create a valid zip archive structure
-      - name: Create Comprehensive .mcpb bundle
+      # Flattens dist/index.js to the root folder of the archive
+      - name: Stage Bundle Elements
         run: |
-          zip -r twitter-mcp.mcpb dist/ package.json smithery.yaml README.md
+          mkdir staging
+          cp dist/index.js staging/index.js
+          cp manifest.json staging/
+          cp smithery.yaml staging/
+          cp package.json staging/
+          cp README.md staging/
+
+      # Zips the staging contents directly so manifest.json is at the root entry point
+      - name: Build Valid .mcpb Zip Archive
+        run: |
+          cd staging
+          zip -r ../twitter-mcp.mcpb .
+          cd ..
           ls -lh twitter-mcp.mcpb
 
       - name: Install Smithery CLI

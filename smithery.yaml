@@ -3,7 +3,6 @@
 startCommand:
   type: stdio
   configSchema:
-    # JSON Schema defining the configuration options for the MCP.
     type: object
     required:
       - apiKey
@@ -15,31 +14,27 @@ startCommand:
         type: string
         title: Twitter API Key
         description: Twitter/X API Key
-
       apiSecretKey:
         type: string
         title: Twitter API Secret Key
         description: Twitter/X API Secret Key
-
       accessToken:
         type: string
         title: Twitter Access Token
         description: Twitter/X Access Token
-
       accessTokenSecret:
         type: string
         title: Twitter Access Token Secret
         description: Twitter/X Access Token Secret
   commandFunction:
-    # A function that produces the CLI command to start the MCP on stdio.
     |-
     (config) => ({
-      command: 'node', 
-      args: ['dist/index.js'], 
+      command: 'node',
+      args: ['index.js'],
       env: {
-        API_KEY: config.apiKey, 
-        API_SECRET_KEY: config.apiSecretKey, 
-        ACCESS_TOKEN: config.accessToken, 
+        API_KEY: config.apiKey,
+        API_SECRET_KEY: config.apiSecretKey,
+        ACCESS_TOKEN: config.accessToken,
         ACCESS_TOKEN_SECRET: config.accessTokenSecret
       }
     })

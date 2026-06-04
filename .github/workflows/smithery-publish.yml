@@ -16,13 +16,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-node-version: 20
+          node-version: 20
 
       - name: Install Smithery CLI
         run: npm install -g smithery@latest
 
       - name: Publish Bundle
         run: |
-          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp
+          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp --token "$SMITHERY_TOKEN"
         env:
           SMITHERY_TOKEN: ${{ secrets.SMITHERY_TOKEN }}

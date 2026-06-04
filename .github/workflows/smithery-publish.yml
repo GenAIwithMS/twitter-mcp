@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -27,11 +26,18 @@ jobs:
           npm run build
           npm run bundle
 
+      # NEW STEP: Compress the compiled dist, package configuration, and smithery.yaml into a compliant bundle
+      - name: Create lightweight .mcpb bundle
+        run: |
+          tar -czf twitter-mcp.mcpb dist/index.js smithery.yaml package.json
+          ls -lh twitter-mcp.mcpb
+
       - name: Install Smithery CLI
         run: npm install -g smithery@latest
 
+      # FIXED: Pass the explicitly generated bundle target instead of the directory dot
       - name: Publish to Smithery Registry
         run: |
-          smithery mcp publish . -n muhammadsiddiq/twitter-mcp
+          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp
         env:
           SMITHERY_API_KEY: ${{ secrets.SMITHERY_TOKEN }}

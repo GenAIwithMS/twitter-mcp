@@ -40,9 +40,9 @@
     "@jest/globals": "^30.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.11.24",
+    "esbuild": "^0.25.12",
     "jest": "^30.2.0",
-    "typescript": "^5.3.3",
-    "esbuild": "^0.21.0"
+    "typescript": "^5.3.3"
   },
   "repository": {
     "type": "git",

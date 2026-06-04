@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows you to trigger it manually from GitHub
+  workflow_dispatch:
 
 jobs:
-  publish:
+  smithery-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -17,12 +17,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and Bundle code
+        run: |
+          npm run build
+          npm run bundle
 
       - name: Install Smithery CLI
         run: npm install -g smithery@latest
 
-      - name: Publish Bundle
+      - name: Publish to Smithery Registry
         run: |
-          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp
+          smithery mcp publish . -n muhammadsiddiq/twitter-mcp
         env:
           SMITHERY_API_KEY: ${{ secrets.SMITHERY_TOKEN }}

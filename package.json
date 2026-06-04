@@ -17,7 +17,8 @@
     "build": "tsc",
     "start": "node build/index.js",
     "test": "node --test test/*.mjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "bundle": "esbuild build/index.js --bundle --platform=node --target=node20 --outfile=dist/index.js --minify"
   },
   "keywords": [
     "mcp",
@@ -40,7 +41,8 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^20.11.24",
     "jest": "^30.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "esbuild": "^0.21.0"
   },
   "repository": {
     "type": "git",

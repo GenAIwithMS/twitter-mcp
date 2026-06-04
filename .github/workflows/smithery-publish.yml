@@ -23,6 +23,6 @@ jobs:
 
       - name: Publish Bundle
         run: |
-          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp --token "$SMITHERY_TOKEN"
+          smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp"
         env:
-          SMITHERY_TOKEN: ${{ secrets.SMITHERY_TOKEN }}
+          SMITHERY_API_KEY: ${{ secrets.SMITHERY_TOKEN }}

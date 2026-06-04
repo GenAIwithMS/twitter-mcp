@@ -18,24 +18,23 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install All Dependencies
         run: npm install
 
-      - name: Build and Bundle code
+      - name: Compile TypeScript and Build Bundle
         run: |
           npm run build
           npm run bundle
 
-      # NEW STEP: Compress the compiled dist, package configuration, and smithery.yaml into a compliant bundle
-      - name: Create lightweight .mcpb bundle
+      # FIXED: Using zip command (-r for recursive tracking) to create a valid zip archive structure
+      - name: Create Comprehensive .mcpb bundle
         run: |
-          tar -czf twitter-mcp.mcpb dist/index.js smithery.yaml package.json
+          zip -r twitter-mcp.mcpb dist/ package.json smithery.yaml README.md
           ls -lh twitter-mcp.mcpb
 
       - name: Install Smithery CLI
         run: npm install -g smithery@latest
 
-      # FIXED: Pass the explicitly generated bundle target instead of the directory dot
       - name: Publish to Smithery Registry
         run: |
           smithery mcp publish ./twitter-mcp.mcpb -n muhammadsiddiq/twitter-mcp

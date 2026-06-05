@@ -13,19 +13,39 @@ startCommand:
       apiKey:
         type: string
         title: Twitter API Key
-        description: Twitter/X API Key
+        description: Twitter/X API Key (consumer key). Can also be provided via the API_KEY environment variable if left empty.
       apiSecretKey:
         type: string
         title: Twitter API Secret Key
-        description: Twitter/X API Secret Key
+        description: Twitter/X API Secret Key (consumer secret). Can also be provided via the API_SECRET_KEY environment variable if left empty.
       accessToken:
         type: string
         title: Twitter Access Token
-        description: Twitter/X Access Token
+        description: Twitter/X Access Token for the authenticated user. Can also be provided via the ACCESS_TOKEN environment variable if left empty.
       accessTokenSecret:
         type: string
         title: Twitter Access Token Secret
-        description: Twitter/X Access Token Secret
+        description: Twitter/X Access Token Secret for the authenticated user. Can also be provided via the ACCESS_TOKEN_SECRET environment variable if left empty.
+      xquikApiKey:
+        type: string
+        title: XQuik API Key
+        description: Optional API key for XQuik tweet search service. Falls back to the XQUIK_API_KEY environment variable if not provided. Required only if using XQuik as the search backend.
+        default: ""
+      xquikBaseUrl:
+        type: string
+        title: XQuik Base URL
+        description: Custom base URL for XQuik API requests. Falls back to XQUIK_BASE_URL environment variable, or defaults to "https://xquik.com" at runtime if neither is set.
+        default: "https://xquik.com"
+      getxapiApiKey:
+        type: string
+        title: GetXAPI API Key
+        description: Optional API key for GetXAPI tweet search service. Falls back to the GETXAPI_API_KEY environment variable if not provided. Required only if using GetXAPI as the search backend.
+        default: ""
+      getxapiBaseUrl:
+        type: string
+        title: GetXAPI Base URL
+        description: Custom base URL for GetXAPI scraping requests. Falls back to GETXAPI_BASE_URL environment variable, or defaults to "https://api.getxapi.com" at runtime if neither is set.
+        default: "https://api.getxapi.com"
   commandFunction:
     |-
     (config) => ({
@@ -35,6 +55,10 @@ startCommand:
         API_KEY: config.apiKey,
         API_SECRET_KEY: config.apiSecretKey,
         ACCESS_TOKEN: config.accessToken,
-        ACCESS_TOKEN_SECRET: config.accessTokenSecret
+        ACCESS_TOKEN_SECRET: config.accessTokenSecret,
+        XQUIK_API_KEY: config.xquikApiKey,
+        XQUIK_BASE_URL: config.xquikBaseUrl,
+        GETXAPI_API_KEY: config.getxapiApiKey,
+        GETXAPI_BASE_URL: config.getxapiBaseUrl
       }
     })

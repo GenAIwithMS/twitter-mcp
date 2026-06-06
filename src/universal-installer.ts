@@ -78,8 +78,8 @@ async function startInstaller() {
   // Step 3: Sequential Twitter API Credentials Prompts
   console.log("\n--- 🔑 Twitter/X API Credentials Configuration ---");
   const credentials = await inquirer.prompt([
-    { type: 'input', name: 'API_KEY', message: 'Enter Twitter API Key:', validate: (i) => i ? true : 'Required' },
-    { type: 'input', name: 'API_SECRET_KEY', message: 'Enter Twitter API Secret Key:', validate: (i) => i ? true : 'Required' },
+    { type: 'input', name: 'API_KEY', message: 'Enter Twitter Consumer API Key:', validate: (i) => i ? true : 'Required' },
+    { type: 'input', name: 'API_SECRET_KEY', message: 'Enter Twitter Consumer API Secret Key:', validate: (i) => i ? true : 'Required' },
     { type: 'input', name: 'ACCESS_TOKEN', message: 'Enter Twitter Access Token:', validate: (i) => i ? true : 'Required' },
     { type: 'input', name: 'ACCESS_TOKEN_SECRET', message: 'Enter Twitter Access Token Secret:', validate: (i) => i ? true : 'Required' }
   ]);
@@ -102,7 +102,7 @@ async function startInstaller() {
       if (!tomlData.mcp_servers) tomlData.mcp_servers = {};
       tomlData.mcp_servers['x-mcp'] = {
         command: "npx",
-        args: ["-y", "@smithery/cli", "mcp", "run", "https://twitter-mcp--muhammadsiddiq.run.tools"],
+        args: ["-y", "@muhammadsiddiq/twitter-mcp"],
         env: credentials
       };
 
@@ -122,14 +122,14 @@ async function startInstaller() {
         if (!jsonData.mcpServers) jsonData.mcpServers = {};
         jsonData.mcpServers['x-mcp'] = {
           command: "npx",
-          args: ["-y", "@smithery/cli", "mcp", "run", "https://twitter-mcp--muhammadsiddiq.run.tools"],
+          args: ["-y", "@muhammadsiddiq/twitter-mcp"],
           env: credentials
         };
       } else if (selectedSchema === 'mcp') {
         if (!jsonData.mcp) jsonData.mcp = {};
         jsonData.mcp['x-mcp'] = {
           type: "local",
-          command: ["npx", "-y", "@smithery/cli", "mcp", "run", "https://twitter-mcp--muhammadsiddiq.run.tools"],
+          command: ["npx", "-y", "@muhammadsiddiq/twitter-mcp"],
           enabled: true,
           environment: credentials
         };

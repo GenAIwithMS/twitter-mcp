@@ -50,7 +50,7 @@ startCommand:
     |-
     (config) => ({
       command: 'node',
-      args: ['index.js'],
+      args: ['./build/index.js'],
       env: {
         API_KEY: config.apiKey,
         API_SECRET_KEY: config.apiSecretKey,

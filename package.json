@@ -1,11 +1,11 @@
 {
   "name": "@muhammadsiddiq/twitter-mcp",
-  "version": "0.3.3",
-  "description": "A Model Context Protocol server allows to interact with Twitter, enabling posting tweets (with images), and searching Twitter.",
+  "version": "0.3.4",
+  "description": "Universal integration setup assistant and Model Context Protocol server for Twitter/X",
   "type": "module",
   "main": "build/index.js",
   "bin": {
-    "twitter-server": "./build/index.js"
+    "x-mcp": "./build/universal-installer.js"
   },
   "files": [
     "build",
@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
+    "setup": "node build/universal-installer.js",
     "test": "node --test test/*.mjs",
     "prepublishOnly": "npm run build",
     "bundle": "esbuild build/index.js --bundle --platform=node --target=node20 --outfile=dist/index.js --minify --packages=external"
@@ -32,14 +33,19 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
     "dotenv": "^16.4.7",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.15",
     "mcp-evals": "^1.0.18",
+    "smol-toml": "^1.3.1",
     "twitter-api-v2": "^1.18.2",
     "zod": "^3.24.0"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20.11.24",
+    "@types/node": "^20.11.0",
     "esbuild": "^0.25.12",
     "jest": "^30.2.0",
     "typescript": "^5.3.3"

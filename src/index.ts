@@ -71,13 +71,8 @@ server.registerTool(
   },
 );
 
-async function main() {
+export async function startServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Twitter MCP Server running on stdio');
 }
-
-main().catch((error) => {
-  console.error('Fatal error starting Twitter MCP Server:', error);
-  process.exit(1);
-});

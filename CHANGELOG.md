@@ -7,42 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Added
-- Optional Hermes Tweet/Xquik backend for the `search_tweets` tool.
-- Node test coverage for Xquik search response mapping and API error handling.
-- Optional GetXAPI backend for the `search_tweets` tool.
-- Node test coverage for GetXAPI search response mapping and API error handling.
+No unreleased changes yet.
 
-## [0.3.0] - 2025-11-06
+## [0.3.7] - 2026-06-09
 
 ### Added
-- Image posting support via `post_tweet_with_image` tool
-- Support for JPG, PNG, GIF, and WEBP image formats
-- Media upload functionality using Twitter API v1.1
-- Automatic MIME type detection for images
-- Comprehensive documentation and setup guides
+- Centralized stdio launch flow in the installer.
+- Expanded installer documentation for interactive setup.
 
 ### Changed
-- Package published as `@muhammadsiddiq/twitter-mcp` on npm
-- Updated repository URLs to genaiwithms
-- Enhanced error handling for file operations
-- Improved README with professional documentation
+- Released package version `0.3.7`.
 
-### Technical Details
-- Added `uploadMedia()` method in TwitterClient
-- Added `postTweetWithImage()` method in TwitterClient
-- Added `getMimeType()` helper function
-- Extended type definitions for image posting
-- Updated MCP tool registration
+## [0.3.6] - 2026-06-08
 
-## [0.2.0] - Previous
+### Added
+- Added `--stdio` routing support.
+- Added Hermes and Kilo installer presets.
+- Added YAML configuration support.
+- Added optional search API key configuration flow.
 
-### Features
-- Post text tweets
-- Search tweets
-- Reply to tweets
-- Rate limiting protection
-- OAuth 1.0a authentication
+## [0.3.5] - 2026-06-07
+
+### Changed
+- Switched installer payload from Smithery distribution to native npm distribution.
+- Released package version `0.3.5`.
+
+## [0.3.4] - 2026-06-06
+
+### Added
+- Added interactive universal installer for AI client configuration.
+- Added Smithery deployment automation and related configurations.
+- Added a lightweight `.mcpb` bundle target for Smithery release flow.
+
+### Changed
+- Migrated runtime startup to official MCP server architecture.
+- Improved README and Smithery metadata documentation.
+- Updated bundling to externalize dependencies and optimize artifact size.
+- Updated CI workflows for Smithery packaging and publishing.
+
+### Fixed
+- Corrected Smithery publish authentication/environment usage.
+- Corrected publish entry point and `smithery.yaml` pathing details.
+- Corrected workflow packaging format and lockfile handling in CI.
+
+## [0.3.3] - 2026-06-01
+
+### Changed
+- Consolidated duplicated MCP configuration blocks in documentation.
+- Updated publish workflow triggers and automation flow.
+- Released package version `0.3.3`.
+
+### Fixed
+- Corrected workflow step syntax in publish automation.
+
+## [0.3.2] - 2026-06-01
+
+### Added
+- Added optional Xquik backend support for `search_tweets`.
+- Added optional GetXAPI backend support for `search_tweets`.
+- Added documentation for Xquik token and key setup.
+
+## [0.3.1] - 2025-12-29
+
+### Added
+- Added MCP server project scaffolding and initial release packaging.
+- Added Dockerfile, release/publish workflows, and Smithery configuration.
+- Added tweet reply functionality.
+- Added evals/tests scaffolding and initial documentation pages.
+
+### Changed
+- Renamed package and aligned documentation with new repository/package naming.
+- Performed broad README structure and setup documentation improvements.
+
+### Fixed
+- Reverted an unintended README update before release finalization.
 
 ---
 

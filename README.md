@@ -83,92 +83,81 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
 
 ### Quick Start
 
-The easiest way to use this MCP server is through npx (no installation required). See [Configuration](#configuration) for the setup instructions.
+The easiest way to use this MCP server is through the interactive installer:
+
+```bash
+npx @muhammadsiddiq/twitter-mcp
+```
+
 ## Configuration
 
-### Step 1: Get Twitter API Credentials
+### Step 1: Run the installer
+
+Start the setup flow with:
+
+```bash
+npx @muhammadsiddiq/twitter-mcp
+```
+
+The installer guides you through every question and writes the correct MCP config for the client you choose.
+
+### Step 2: Choose your target client
+
+The first prompt asks which AI assistant environment you want to integrate with. Available options are:
+
+- Claude Desktop App
+- Cursor IDE
+- OpenCode IDE
+- Hermes
+- Kilo
+- Custom Agent
+
+If you choose a built-in client, the installer already knows the right config location and format. If you choose Custom Agent, it asks for the config file path and the config structure to use.
+
+### Step 3: Answer the credential prompts
+
+Next, the installer asks for the Twitter/X API credentials it needs to work:
+
+- Consumer Key
+- Consumer Secret Key
+- Access Token
+- Access Token Secret
+
+These values are required for posting, replying, and Twitter API search.
+
+#### How to get Twitter API credentials
 
 1. Visit [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard)
 2. Create a new App or use an existing one
 3. Navigate to "Keys and Tokens"
 4. Generate/Copy the following:
-   - API Key
-   - API Secret Key
-   - Access Token
-   - Access Token Secret
+  - Consumer Key
+  - Consumer Secret Key
+  - Access Token
+  - Access Token Secret
 
-### Step 2: Configure Claude Desktop
+Provide these values when the installer prompts for them.
 
-#### Windows
+### Step 4: Optional search backend keys
 
-Edit the configuration file located at:
-```
-%APPDATA%\Claude\claude_desktop_config.json
-```
+The installer then asks whether you want to add optional read-only search backends for `search_tweets`.
 
-Or navigate to:
-```
-C:\Users\YOUR_USERNAME\AppData\Roaming\Claude\claude_desktop_config.json
-```
+If you say yes, it can collect:
 
-#### macOS
+- XQuik / Hermes Tweet API key
+- GetXAPI API key
 
-Edit the configuration file located at:
-```
-~/Library/Application Support/Claude/claude_desktop_config.json
-```
-
-#### Linux
-
-Edit the configuration file located at:
-```
-~/.config/Claude/claude_desktop_config.json
-```
-
-### Step 3: Add MCP Server Configuration
-
-Add the following to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "npx",
-      "args": ["-y", "@muhammadsiddiq/twitter-mcp"],
-      "env": {
-        "API_KEY": "your_api_key",
-        "API_SECRET_KEY": "your_api_secret_key",
-        "ACCESS_TOKEN": "your_access_token",
-        "ACCESS_TOKEN_SECRET": "your_access_token_secret",
-        "XQUIK_API_KEY": "${XQUIK_API_KEY}",
-        "XQUIK_BASE_URL": "https://xquik.com",
-        "GETXAPI_API_KEY": "${GETXAPI_API_KEY}",
-        "GETXAPI_BASE_URL": "https://api.getxapi.com"
-      }
-    }
-  }
-}
-```
-
-**Required** for posting and Twitter API search: `API_KEY`, `API_SECRET_KEY`, `ACCESS_TOKEN`, `ACCESS_TOKEN_SECRET`.
-
-**Optional** read-only search backends:
-- **Hermes Tweet/Xquik**: `XQUIK_API_KEY` (or `HERMES_TWEET_API_KEY` as alias), `XQUIK_BASE_URL` (defaults to `https://xquik.com`)
-- **GetXAPI**: `GETXAPI_API_KEY`, `GETXAPI_BASE_URL` (defaults to `https://api.getxapi.com`)
-
-Resolution order for `search_tweets`: Xquik (via `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY`), then GetXAPI (via `GETXAPI_API_KEY`), then the configured Twitter API credentials.
-
-For security, consider using environment variable references (`${VAR_NAME}`) instead of hardcoded values in production.
+These are optional. If you skip them, the server still works with the Twitter OAuth credentials.
 
 #### Getting an Xquik / Hermes Tweet token
 
 1. Sign in at [dashboard.xquik.com](https://dashboard.xquik.com/).
 2. Open [Account > API Keys](https://dashboard.xquik.com/en/account?tab=api-keys).
 3. Create an API key for this MCP server and copy it once.
-4. Store that value as `XQUIK_API_KEY` in your Claude Desktop MCP config or shell environment.
+4. Store that value as `XQUIK_API_KEY` in your MCP config or shell environment.
 5. If your deployment uses the Hermes Tweet naming, set the same value as `HERMES_TWEET_API_KEY` instead.
 6. Leave `XQUIK_BASE_URL` unset unless your team runs a compatible non-default deployment.
-7. Restart Claude Desktop and call `search_tweets` to verify read-only search.
+7. Restart your client and call `search_tweets` to verify read-only search.
 
 Keep the key out of Git, chat prompts, screenshots, and shared config files. The key only changes `search_tweets`; posting and replying still use the Twitter OAuth variables.
 
@@ -176,64 +165,16 @@ Keep the key out of Git, chat prompts, screenshots, and shared config files. The
 
 1. Sign in at [getxapi.com](https://getxapi.com/).
 2. Create an API key for this MCP server and copy it once.
-3. Store that value as `GETXAPI_API_KEY` in your Claude Desktop MCP config or shell environment.
+3. Store that value as `GETXAPI_API_KEY` in your MCP config or shell environment.
 4. Leave `GETXAPI_BASE_URL` unset unless your team runs a compatible non-default deployment.
-5. Restart Claude Desktop and call `search_tweets` to verify read-only search.
-
-### Step 4: Restart Claude Desktop
-
-Close and reopen Claude Desktop completely for the changes to take effect.
+5. Restart your client and call `search_tweets` to verify read-only search.
 
 
-## Setting Up Filesystem Access in Claude Desktop
+### Step 5: Finish setup
 
-Claude Desktop needs permission to access files and folders on your computer. Follow these simple steps to grant access:
+After the questions are answered, the installer writes the config automatically and tells you to restart the selected client.
 
-### Step-by-Step Instructions
 
-1. **Open Claude Desktop Settings**
-   - Click on your profile icon or the settings gear in Claude Desktop
-   - Navigate to **Settings**
-
-2. **Go to Connectors**
-   - In the Settings menu, find and click on **Connectors**
-
-3. **Enable Filesystem Access**
-   - Click on **Browse Connectors**
-   - Select **Desktop Extensions**
-   - Find and click on **Filesystem**
-
-4. **Add Directory Path**
-   - Enter the full path to the directory you want Claude to access
-   - **Examples**:
-     - Windows: `C:\Users\YourName\TwitterImages`
-     - macOS: `/Users/yourname/TwitterImages`
-     - Linux: `/home/yourname/TwitterImages`
-   
-   💡 **Tip**: You can add multiple directories by repeating this step
-
-5. **Save and Restart**
-   - Click **Save** or **Apply**
-   - **Close Claude Desktop completely**
-   - **Reopen Claude Desktop** for changes to take effect
-
-### Verification
-
-To verify filesystem access is working:
-1. Ask Claude: "List files in the directory I gave you access to"
-2. Or provide a specific path: "Show me files in `C:\Users\YourName\TwitterImages`"
-
-If Claude can see your files, you're all set! 🎉
-
-### Common Paths to Consider
-
-- **For Twitter images**: Create a dedicated folder like:
-  - `C:\TwitterImages` (Windows)
-  - `~/TwitterImages` (macOS/Linux)
-  
-- **For documents**: 
-  - `C:\Users\YourName\Documents` (Windows)
-  - `~/Documents` (macOS/Linux)
 
 ### Troubleshooting
 
@@ -272,35 +213,43 @@ Post this image with caption: "Check out this amazing view!"
 take image from desktop
 ```
 
-**Working with Images:**
+**Working with Images**
 
-1. **File Access**:
-  - The filesystem MCP server must be configured to access local images
-  - Images must be in an accessible location on your computer
-  - Both absolute and relative paths are supported
+Images must be accessible to the MCP server process that your client launches. Below are the common flows and what to expect:
 
-2. **Path Formats**:
+- CLI flow (running the server directly):
+  - You can pass an absolute or relative path to the image when using the CLI/server directly.
+  - Example: `npx @muhammadsiddiq/twitter-mcp --stdio` then provide `/home/me/Pictures/photo.jpg` or `./images/photo.jpg` when prompted.
+  - If the CLI is started from a different working directory, provide an absolute path or change to the correct folder first.
+
+- Agent flow (Claude Desktop, Cherry Studio, etc.):
+  - Most desktop agents use a filesystem MCP connector to grant the agent access to files. Claude Desktop includes this; some clients (e.g., Cherry Studio) require you to enable/configure the filesystem connector.
+  - Configure the client's filesystem MCP (or connector) to include the folder(s) containing your images. After granting access, restart the client and then ask the agent to attach or use the image by filename or path.
+
+- Permission notes:
+  - The MCP server process (or the agent) must have read permission for the image file.
+  - When using desktop agents, the client will typically prompt you to grant filesystem access; follow the client's permission flow rather than changing file permissions globally.
+
+Supported path examples:
+
   - Windows: `C:\Users\YourName\Pictures\image.jpg`
   - macOS: `/Users/YourName/Pictures/image.jpg`
   - Linux: `/home/yourname/pictures/image.jpg`
-  - Relative: `./images/photo.jpg` (relative to your working directory)
+  - Relative: `./images/photo.jpg` (relative to the server's working directory)
 
-3. **Supported Image Formats**:
-  - JPEG/JPG (`image/jpeg`)
-  - PNG (`image/png`)
-  - GIF (`image/gif`)
-  - WEBP (`image/webp`)
+Supported formats and limits:
 
-4. **Image Requirements**:
-  - Maximum file size: 5MB for static images, 15MB for GIFs
-  - Recommended dimensions: 1200x675 pixels (16:9 aspect ratio)
-  - File permissions: Must be readable by the Claude Desktop app
+  - JPEG/JPG, PNG, GIF, WEBP
+  - Max size: ~5MB for static images, ~15MB for animated GIFs (subject to client limits)
 
-5. **Best Practices**:
-  - Use relative paths when possible for portability
-  - Keep images in a dedicated folder for better organization
-  - Consider image optimization for better upload performance
-  - Test with small images first
+Best practices:
+
+  - Use absolute paths if you are unsure of the current working directory.
+  - Keep images in a dedicated folder and add that folder to your client's filesystem permissions.
+  - Prefer small, optimized images for faster uploads and fewer failures.
+  - If an agent cannot see a file, check the client's filesystem connector settings and restart the client after granting access.
+
+If you're using an MCP client not listed here, check the client's documentation for how to grant or configure filesystem access (search for "filesystem connector", "desktop connectors", or "MCP filesystem").
 
 ### Searching Tweets
 
@@ -318,7 +267,7 @@ Search for 50 tweets about "climate change" from the past week
 
 ### Tools
 
-The server provides three tools that can be accessed through Claude:
+The server provides three tools that can be accessed:
 
 #### 1. `post_tweet`
 

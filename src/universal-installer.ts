@@ -10,6 +10,8 @@ import * as yaml from 'js-yaml';
 const HOME = os.homedir();
 const IS_WIN = os.platform() === 'win32';
 const APPDATA = process.env.APPDATA || '';
+const MCP_SERVER_COMMAND = 'npx';
+const MCP_SERVER_ARGS = ['-y', '@muhammadsiddiq/twitter-mcp', '--stdio'];
 
 // Known pre-configured default system file paths for popular AI clients
 const PRESET_PATHS: Record<string, string> = {
@@ -148,8 +150,8 @@ export async function startInstaller() {
 
       if (!tomlData.mcp_servers) tomlData.mcp_servers = {};
       tomlData.mcp_servers['x-mcp'] = {
-        command: "npx",
-        args: ["-y", "@muhammadsiddiq/twitter-mcp"],
+        command: MCP_SERVER_COMMAND,
+        args: MCP_SERVER_ARGS,
         env: credentials
       };
 
@@ -166,8 +168,8 @@ export async function startInstaller() {
 
       if (!yamlData.mcp_servers) yamlData.mcp_servers = {};
       yamlData.mcp_servers['x-mcp'] = {
-        command: "npx",
-        args: ["-y", "@muhammadsiddiq/twitter-mcp", "--stdio"],
+        command: MCP_SERVER_COMMAND,
+        args: MCP_SERVER_ARGS,
         env: credentials
       };
 
@@ -186,15 +188,15 @@ export async function startInstaller() {
       if (selectedSchema === 'mcpServers') {
         if (!jsonData.mcpServers) jsonData.mcpServers = {};
         jsonData.mcpServers['x-mcp'] = {
-          command: "npx",
-          args: ["-y", "@muhammadsiddiq/twitter-mcp"],
+          command: MCP_SERVER_COMMAND,
+          args: MCP_SERVER_ARGS,
           env: credentials
         };
       } else if (selectedSchema === 'mcp') {
         if (!jsonData.mcp) jsonData.mcp = {};
         jsonData.mcp['x-mcp'] = {
           type: "local",
-          command: ["npx", "-y", "@muhammadsiddiq/twitter-mcp"],
+          command: [MCP_SERVER_COMMAND, ...MCP_SERVER_ARGS],
           enabled: true,
           environment: credentials
         };

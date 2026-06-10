@@ -2,21 +2,32 @@
 
 # Twitter MCP Server
 
-Connect AI assistants to X (Twitter) using the Model Context Protocol (MCP).
+### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
-Post tweets • Upload images • Search tweets • Reply to conversations
+ Post tweets • Upload images • Search tweets • Reply to conversations
 
-[![npm version](https://img.shields.io/npm/v/@muhammadsiddiq/twitter-mcp.svg)](https://www.npmjs.com/package/@muhammadsiddiq/twitter-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node Version](https://img.shields.io/node/v/@muhammadsiddiq/twitter-mcp)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+---
+
+<!-- Badges Row 1: Registry & Quality -->
+[![twitter-mcp MCP server](https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp/badges/card.svg)](https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp)
+
+
+<!-- Badges Row 2: Tech Stack -->
+[![npm version](https://img.shields.io/npm/v/@muhammadsiddiq/twitter-mcp.svg?style=flat-square&color=cb3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/@muhammadsiddiq/twitter-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/node/v/@muhammadsiddiq/twitter-mcp?style=flat-square&logo=node.js&logoColor=white&color=339933)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+<!-- Badges Row 3: Social -->
 [![GitHub Stars](https://img.shields.io/github/stars/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/network/members)
 
-[Quick Start](#quick-start) •
-[Features](#features) •
-[Documentation](#usage) •
-[Contributing](./CONTRIBUTING.md)
+---
+
+**[🚀 Quick Start](#quick-start)** &nbsp;•&nbsp;
+**[✨ Features](#features)** &nbsp;•&nbsp;
+**[📖 Documentation](#usage)** &nbsp;•&nbsp;
+**[🤝 Contributing](./CONTRIBUTING.md)**
 
 </div>
 

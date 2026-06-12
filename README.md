@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles
 
 ---
 
@@ -40,6 +40,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🐦 **Post Tweets** - Share your thoughts with the world
 - 🖼️ **Image Support** - Post tweets with images (JPG, PNG, GIF, WEBP)
 - 🔍 **Search Tweets** - Find and analyze tweets by query
+- 👤 **User Profile Context** - Fetch comprehensive user profiles with bio, metrics, pinned tweet, and recent activity
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -77,6 +78,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Posting Tweets](#posting-tweets)
   - [Posting with Images](#posting-with-images)
   - [Searching Tweets](#searching-tweets)
+  - [User Profile Lookup](#user-profile-lookup)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -274,6 +276,15 @@ Search for tweets about "artificial intelligence"
 Search for 50 tweets about "climate change" from the past week
 ```
 
+### User Profile Lookup
+
+**Get profile context:**
+```
+Look up the profile of "elonmusk"
+```
+
+The tool returns bio, profile metadata, follower/following metrics, pinned tweet, and the 5 most recent original tweets.
+
 ## API Reference
 
 ### Tools
@@ -303,7 +314,62 @@ Post a tweet with an attached image.
 - GIF (animated, max 15MB)
 - WEBP
 
-#### 3. `search_tweets`
+#### 3. `get_user_profile_context`
+
+Fetch a comprehensive Twitter/X user profile.
+
+**Parameters:**
+- `username` (string) — Twitter handle (without `@`)
+
+**Returns:**
+- `id`, `name`, `username`, `description`, `profile_image_url`
+- `verified`, `protected`, `location`, `url`, `created_at`
+- `public_metrics` (followers/following/tweet/listed counts)
+- `pinned_tweet` (if set)
+- `recent_tweets` (last 5 original tweets with engagement metrics)
+
+**Example:**
+```json
+// Request:
+{
+  "username": "elonmusk"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "User profile fetched successfully",
+  "data": {
+    "id": "44196397",
+    "name": "Elon Musk",
+    "username": "elonmusk",
+    "description": "...",
+    "public_metrics": {
+      "followers_count": 190000000,
+      "following_count": 743,
+      "tweet_count": 30000,
+      "listed_count": 150000
+    },
+    "pinned_tweet": {
+      "id": "123456789",
+      "text": "...",
+      "created_at": "2026-06-01T12:00:00.000Z"
+    },
+    "recent_tweets": [
+      {
+        "id": "987654321",
+        "text": "...",
+        "created_at": "2026-06-12T08:00:00.000Z",
+        "like_count": 50000,
+        "retweet_count": 10000,
+        "reply_count": 2000
+      }
+    ]
+  }
+}
+```
+
+#### 4. `search_tweets`
 
 Search for tweets matching a query.
 

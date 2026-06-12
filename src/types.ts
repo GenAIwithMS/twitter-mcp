@@ -140,6 +140,53 @@ export type SearchResponse = {
   };
 };
 
+// User profile schema
+export const GetUserProfileSchema = z.object({
+  username: z
+    .string()
+    .describe(
+      'The Twitter/X username (handle) to look up. Do NOT include the @ symbol. Example: "elonmusk", "twitter". The username is case-insensitive and will be resolved to the canonical Twitter user profile.'
+    ),
+});
+
+export const GetUserProfileOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    id: z.string().describe('The unique numeric string ID assigned by Twitter to the user.'),
+    name: z.string().describe('The display name of the user as shown on their profile.'),
+    username: z.string().describe('The @handle username of the user.'),
+    description: z.string().optional().describe('The bio/description text from the user\'s profile.'),
+    profile_image_url: z.string().optional().describe('URL to the user\'s profile avatar image.'),
+    verified: z.boolean().optional().describe('Whether the user has a verified account.'),
+    protected: z.boolean().optional().describe('Whether the user has a protected (private) account.'),
+    location: z.string().optional().describe('The location listed on the user\'s profile.'),
+    url: z.string().optional().describe('The URL listed on the user\'s profile.'),
+    created_at: z.string().optional().describe('ISO-8601 timestamp of when the user joined Twitter.'),
+    public_metrics: z.object({
+      followers_count: z.number().describe('Number of followers the user has.'),
+      following_count: z.number().describe('Number of accounts the user follows.'),
+      tweet_count: z.number().describe('Total number of tweets posted by the user.'),
+      listed_count: z.number().describe('Number of lists the user is on.'),
+    }).optional().describe('Public engagement metrics for the user.'),
+    pinned_tweet: z.object({
+      id: z.string(),
+      text: z.string(),
+      created_at: z.string(),
+    }).optional().describe('The user\'s pinned tweet, if one is set.'),
+    recent_tweets: z.array(z.object({
+      id: z.string().describe('The unique numeric string ID of the tweet.'),
+      text: z.string().describe('The full text content of the tweet.'),
+      created_at: z.string().describe('ISO-8601 timestamp of tweet creation.'),
+      like_count: z.number().optional().describe('Number of likes on the tweet.'),
+      retweet_count: z.number().optional().describe('Number of retweets of the tweet.'),
+      reply_count: z.number().optional().describe('Number of replies to the tweet.'),
+    })).describe('The 5 most recent tweets from the user.'),
+  }).describe('Container holding the user profile data, bio, metrics, pinned tweet, and recent tweets.'),
+});
+
+export type GetUserProfileRequest = z.infer<typeof GetUserProfileSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

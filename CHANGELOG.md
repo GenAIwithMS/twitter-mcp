@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No unreleased changes yet.
 
+## [0.3.8] - 2026-06-12
+
+### Added
+- New `get_user_profile_context` tool for fetching comprehensive Twitter/X user profiles
+  including bio, public metrics, pinned tweet, and 5 most recent original tweets.
+- Updated `twitter-api-v2` dependency from `1.27.0` to `1.29.0`.
+
+### Changed
+- Released package version `0.3.8`.
+
 ## [0.3.7] - 2026-06-09
 
 ### Added

@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -119,6 +119,71 @@ export class TwitterClient {
         result_count: result.data.meta.result_count,
         next_token: result.data.meta.next_token,
       },
+    };
+  }
+
+  async getUserProfile(request: GetUserProfileRequest) {
+    const { username } = request;
+
+    const userResult = await this.getTwitterClient().v2.userByUsername(username, {
+      expansions: ['pinned_tweet_id'],
+      'user.fields': [
+        'description',
+        'profile_image_url',
+        'public_metrics',
+        'verified',
+        'protected',
+        'location',
+        'url',
+        'created_at',
+        'name',
+      ],
+      'tweet.fields': ['created_at', 'text', 'public_metrics'],
+    });
+
+    const user = userResult.data;
+    const includes = userResult.includes;
+
+    let pinnedTweet: { id: string; text: string; created_at: string } | undefined;
+
+    if (includes?.tweets?.[0]) {
+      const pt = includes.tweets[0];
+      pinnedTweet = {
+        id: pt.id,
+        text: pt.text,
+        created_at: pt.created_at || '',
+      };
+    }
+
+    const timelineResult = await this.getTwitterClient().v2.userTimeline(user.id, {
+      max_results: 5,
+      'tweet.fields': ['created_at', 'text', 'public_metrics'],
+      exclude: ['replies', 'retweets'],
+    });
+
+    const recentTweets = (timelineResult.data.data || []).map(tweet => ({
+      id: tweet.id,
+      text: tweet.text,
+      created_at: tweet.created_at || '',
+      like_count: tweet.public_metrics?.like_count,
+      retweet_count: tweet.public_metrics?.retweet_count,
+      reply_count: tweet.public_metrics?.reply_count,
+    }));
+
+    return {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      description: user.description,
+      profile_image_url: user.profile_image_url,
+      verified: user.verified,
+      protected: user.protected,
+      location: user.location,
+      url: user.url,
+      created_at: user.created_at,
+      public_metrics: user.public_metrics,
+      pinned_tweet: pinnedTweet,
+      recent_tweets: recentTweets,
     };
   }
 

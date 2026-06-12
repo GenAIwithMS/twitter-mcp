@@ -6,11 +6,14 @@ import {
   PostTweetSchema, 
   PostTweetWithImageSchema, 
   SearchTweetsSchema,
+  GetUserProfileSchema,
+  GetUserProfileOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
   PostTweetWithImageRequest,
-  SearchTweetsRequest
+  SearchTweetsRequest,
+  GetUserProfileRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -67,6 +70,23 @@ server.registerTool(
       return formatSuccessResponse('Search completed successfully', results);
     } catch (error) {
       return formatErrorResponse('Failed to search tweets', error);
+    }
+  },
+);
+
+server.registerTool(
+  'get_user_profile_context',
+  {
+    description: 'Fetches a comprehensive Twitter/X user profile including bio, profile metadata, public metrics (followers, following, tweet count), the pinned tweet (if set), and the 5 most recent original tweets. Use this tool when the LLM needs to understand who a user is before engaging with them—for example, checking credibility, reading their bio, reviewing their recent activity, or deciding whether to reply, retweet, or quote. Input is the @username (without the @ symbol). Returns a rich combined JSON object with all profile context in one call.',
+    inputSchema: GetUserProfileSchema.shape,
+    outputSchema: GetUserProfileOutputSchema.shape,
+  },
+  async (request: GetUserProfileRequest) => {
+    try {
+      const profile = await twitterClient.getUserProfile(request);
+      return formatSuccessResponse('User profile fetched successfully', profile);
+    } catch (error) {
+      return formatErrorResponse('Failed to fetch user profile', error);
     }
   },
 );

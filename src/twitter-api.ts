@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -184,6 +184,70 @@ export class TwitterClient {
       public_metrics: user.public_metrics,
       pinned_tweet: pinnedTweet,
       recent_tweets: recentTweets,
+    };
+  }
+
+  async searchRecentMentions(request: SearchRecentMentionsRequest) {
+    const { query, max_results } = request;
+
+    if (query) {
+      const result = await this.getTwitterClient().v2.search({
+        query,
+        max_results,
+        'tweet.fields': ['created_at', 'author_id', 'text', 'public_metrics'],
+        expansions: ['author_id'],
+        'user.fields': ['username'],
+      });
+
+      const users = result.includes?.users || [];
+      const userMap = new Map(users.map(u => [u.id, u.username]));
+
+      return {
+        tweets: result.data.data.map(tweet => ({
+          id: tweet.id,
+          text: tweet.text,
+          author_id: tweet.author_id || '',
+          author_username: tweet.author_id ? userMap.get(tweet.author_id) : undefined,
+          created_at: tweet.created_at || '',
+          like_count: tweet.public_metrics?.like_count,
+          retweet_count: tweet.public_metrics?.retweet_count,
+          reply_count: tweet.public_metrics?.reply_count,
+        })),
+        meta: {
+          result_count: result.data.meta.result_count,
+          next_token: result.data.meta.next_token,
+        },
+      };
+    }
+
+    const currentUser = await this.getTwitterClient().v1.verifyCredentials();
+    const userId = currentUser.id_str;
+
+    const mentionsResult = await this.getTwitterClient().v2.userMentionTimeline(userId, {
+      max_results,
+      'tweet.fields': ['created_at', 'author_id', 'text', 'public_metrics'],
+      expansions: ['author_id'],
+      'user.fields': ['username'],
+    });
+
+    const users = mentionsResult.includes?.users || [];
+    const userMap = new Map(users.map(u => [u.id, u.username]));
+
+    return {
+      tweets: mentionsResult.data.data.map(tweet => ({
+        id: tweet.id,
+        text: tweet.text,
+        author_id: tweet.author_id || '',
+        author_username: tweet.author_id ? userMap.get(tweet.author_id) : undefined,
+        created_at: tweet.created_at || '',
+        like_count: tweet.public_metrics?.like_count,
+        retweet_count: tweet.public_metrics?.retweet_count,
+        reply_count: tweet.public_metrics?.reply_count,
+      })),
+      meta: {
+        result_count: mentionsResult.data.meta.result_count,
+        next_token: mentionsResult.data.meta.next_token,
+      },
     };
   }
 

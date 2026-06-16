@@ -10,13 +10,16 @@ import {
   GetUserProfileOutputSchema,
   FetchThreadHistorySchema,
   FetchThreadHistoryOutputSchema,
+  SearchRecentMentionsSchema,
+  SearchRecentMentionsOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
   PostTweetWithImageRequest,
   SearchTweetsRequest,
   GetUserProfileRequest,
-  FetchThreadHistoryRequest
+  FetchThreadHistoryRequest,
+  SearchRecentMentionsRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -107,6 +110,23 @@ server.registerTool(
       return formatSuccessResponse('Thread history fetched successfully', result);
     } catch (error) {
       return formatErrorResponse('Failed to fetch thread history', error);
+    }
+  },
+);
+
+server.registerTool(
+  'search_recent_mentions',
+  {
+    description: 'Searches for recent tweets mentioning the authenticated user or matching a custom query. When no query is provided, fetches tweets that mention the authenticated account. When a query is provided, uses the Twitter recent search API to find matching tweets. Use this tool when the LLM needs to monitor mentions of the user, track brand/conversation mentions, or search for recent tweets on a topic. Each result includes the tweet text, author info, timestamp, and engagement metrics. Returns up to max_results tweets (default 10, max 100).',
+    inputSchema: SearchRecentMentionsSchema.shape,
+    outputSchema: SearchRecentMentionsOutputSchema.shape,
+  },
+  async (request: SearchRecentMentionsRequest) => {
+    try {
+      const result = await twitterClient.searchRecentMentions(request);
+      return formatSuccessResponse('Recent mentions fetched successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to fetch recent mentions', error);
     }
   },
 );

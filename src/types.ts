@@ -214,6 +214,47 @@ export const FetchThreadHistoryOutputSchema = z.object({
 
 export type FetchThreadHistoryRequest = z.infer<typeof FetchThreadHistorySchema>;
 
+// Search recent mentions schema
+export const SearchRecentMentionsSchema = z.object({
+  query: z
+    .string()
+    .optional()
+    .describe(
+      'Optional search query string. When provided, uses the Twitter recent search endpoint to find tweets matching the query. Supports the full Twitter advanced search syntax. When omitted, fetches tweets that mention the authenticated user\'s account.',
+    ),
+  max_results: z
+    .number()
+    .min(5)
+    .max(100)
+    .default(10)
+    .describe(
+      'Maximum number of mention/search results to return. Must be between 5 and 100. Defaults to 10.',
+    ),
+});
+
+export const SearchRecentMentionsOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    tweets: z.array(z.object({
+      id: z.string().describe('The unique numeric string ID of the tweet.'),
+      text: z.string().describe('The full text content of the tweet.'),
+      author_id: z.string().describe('The Twitter user ID of the tweet author.'),
+      author_username: z.string().optional().describe('The @handle of the tweet author.'),
+      created_at: z.string().describe('ISO-8601 timestamp of tweet creation.'),
+      like_count: z.number().optional().describe('Number of likes on the tweet.'),
+      retweet_count: z.number().optional().describe('Number of retweets of the tweet.'),
+      reply_count: z.number().optional().describe('Number of replies to the tweet.'),
+    })).describe('Array of tweets matching the mention/search query.'),
+    meta: z.object({
+      result_count: z.number().describe('The number of tweets returned in this result set.'),
+      next_token: z.string().optional().describe('A pagination token for fetching the next page of results.'),
+    }).describe('Metadata about the search result.'),
+  }).describe('Container holding the matched tweets and metadata.'),
+});
+
+export type SearchRecentMentionsRequest = z.infer<typeof SearchRecentMentionsSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- New `search_recent_mentions` tool for monitoring mentions of the
+  authenticated user or searching recent tweets by keyword.
 - New `fetch_thread_history` tool for retrieving full conversation threads
   by tweet ID, including chronological ordering and reply relationships.
 

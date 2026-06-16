@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions
 
 ---
 
@@ -42,6 +42,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🔍 **Search Tweets** - Find and analyze tweets by query
 - 👤 **User Profile Context** - Fetch comprehensive user profiles with bio, metrics, pinned tweet, and recent activity
 - 💬 **Thread History** - Retrieve full conversation threads by tweet ID
+- 🔔 **Mention Monitoring** - Search recent mentions of the authenticated user or custom keywords
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -81,6 +82,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Searching Tweets](#searching-tweets)
   - [User Profile Lookup](#user-profile-lookup)
   - [Thread History](#thread-history)
+  - [Mention Monitoring](#mention-monitoring)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -296,6 +298,16 @@ Show me the full conversation thread for tweet 1234567890
 
 The tool finds the conversation the tweet belongs to and returns all tweets ordered chronologically, with author IDs, text, timestamps, and reply relationships.
 
+### Mention Monitoring
+
+**Check mentions and search:**
+```
+What are the latest mentions of my account?
+Search recent tweets about "product launch"
+```
+
+Without a query, returns tweets mentioning the authenticated user. With a query, searches recent tweets matching it. Each result includes author, text, timestamp, and engagement metrics.
+
 ## API Reference
 
 ### Tools
@@ -431,7 +443,55 @@ Retrieve the full conversation thread for a tweet.
 }
 ```
 
-#### 5. `search_tweets`
+#### 5. `search_recent_mentions`
+
+Monitor mentions of the authenticated user or search recent tweets by keyword.
+
+**Parameters:**
+- `query` (string, optional) — Custom search query. Omitting returns mentions of your account.
+- `max_results` (number, optional, default 10) — Results to return (5–100).
+
+**Returns:**
+- `tweets` — array with `id`, `text`, `author_id`, `author_username`, `created_at`, `like_count`, `retweet_count`, `reply_count`
+- `meta` — `result_count` and optional `next_token` for pagination
+
+**Example:**
+```json
+// Request (mentions):
+{
+  "max_results": 10
+}
+
+// Request (custom search):
+{
+  "query": "product launch",
+  "max_results": 20
+}
+
+// Response:
+{
+  "status": "success",
+  "data": {
+    "tweets": [
+      {
+        "id": "1234567890",
+        "text": "@user Great post!",
+        "author_id": "98765",
+        "author_username": "follower1",
+        "created_at": "2026-06-12T12:00:00.000Z",
+        "like_count": 5,
+        "retweet_count": 1,
+        "reply_count": 0
+      }
+    ],
+    "meta": {
+      "result_count": 10
+    }
+  }
+}
+```
+
+#### 6. `search_tweets`
 
 Search for tweets matching a query.
 

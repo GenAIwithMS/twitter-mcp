@@ -187,6 +187,33 @@ export const GetUserProfileOutputSchema = z.object({
 
 export type GetUserProfileRequest = z.infer<typeof GetUserProfileSchema>;
 
+// Thread history schema
+export const FetchThreadHistorySchema = z.object({
+  tweet_id: z.string().describe(
+    'The unique numeric string ID of the tweet to retrieve the conversation thread for. The tool will look up the tweet, find its conversation_id, and return all tweets in that conversation thread chronologically.',
+  ),
+});
+
+export const FetchThreadHistoryOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    conversation_id: z.string().describe('The ID of the conversation thread this tweet belongs to.'),
+    thread: z.array(z.object({
+      id: z.string().describe('The unique numeric string ID of the tweet.'),
+      text: z.string().describe('The full text content of the tweet.'),
+      author_id: z.string().describe('The Twitter user ID of the tweet author.'),
+      created_at: z.string().describe('ISO-8601 timestamp of tweet creation.'),
+      like_count: z.number().optional().describe('Number of likes on the tweet.'),
+      retweet_count: z.number().optional().describe('Number of retweets of the tweet.'),
+      reply_count: z.number().optional().describe('Number of replies to the tweet.'),
+      in_reply_to_tweet_id: z.string().optional().describe('The tweet ID this tweet is replying to, if any.'),
+    })).describe('Array of tweets in the conversation, ordered chronologically (oldest first).'),
+  }).describe('Container holding the conversation ID and ordered thread array.'),
+});
+
+export type FetchThreadHistoryRequest = z.infer<typeof FetchThreadHistorySchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

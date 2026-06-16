@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-No unreleased changes yet.
+### Added
+- New `fetch_thread_history` tool for retrieving full conversation threads
+  by tweet ID, including chronological ordering and reply relationships.
 
 ## [0.3.8] - 2026-06-12
 

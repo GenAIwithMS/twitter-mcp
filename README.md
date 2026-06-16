@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads
 
 ---
 
@@ -41,6 +41,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🖼️ **Image Support** - Post tweets with images (JPG, PNG, GIF, WEBP)
 - 🔍 **Search Tweets** - Find and analyze tweets by query
 - 👤 **User Profile Context** - Fetch comprehensive user profiles with bio, metrics, pinned tweet, and recent activity
+- 💬 **Thread History** - Retrieve full conversation threads by tweet ID
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -79,6 +80,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Posting with Images](#posting-with-images)
   - [Searching Tweets](#searching-tweets)
   - [User Profile Lookup](#user-profile-lookup)
+  - [Thread History](#thread-history)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -285,6 +287,15 @@ Look up the profile of "elonmusk"
 
 The tool returns bio, profile metadata, follower/following metrics, pinned tweet, and the 5 most recent original tweets.
 
+### Thread History
+
+**Get conversation thread:**
+```
+Show me the full conversation thread for tweet 1234567890
+```
+
+The tool finds the conversation the tweet belongs to and returns all tweets ordered chronologically, with author IDs, text, timestamps, and reply relationships.
+
 ## API Reference
 
 ### Tools
@@ -368,15 +379,65 @@ Fetch a comprehensive Twitter/X user profile.
   }
 }
 ```
+ 
 
-#### 4. `search_tweets`
+#### 4. `fetch_thread_history`
+
+Retrieve the full conversation thread for a tweet.
+
+**Parameters:**
+- `tweet_id` (string) — ID of the tweet in the thread
+
+**Returns:**
+- `conversation_id` — the thread's conversation ID
+- `thread` — array of tweets ordered oldest-first with `id`, `text`, `author_id`, `created_at`, engagement metrics, and `in_reply_to_tweet_id`
+
+**Example:**
+```json
+// Request:
+{
+  "tweet_id": "1234567890"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Thread history fetched successfully",
+  "data": {
+    "conversation_id": "1234567890",
+    "thread": [
+      {
+        "id": "1234567880",
+        "text": "Original post...",
+        "author_id": "user1",
+        "created_at": "2026-06-12T10:00:00.000Z",
+        "like_count": 120,
+        "retweet_count": 30,
+        "reply_count": 5,
+        "in_reply_to_tweet_id": null
+      },
+      {
+        "id": "1234567890",
+        "text": "Reply to the thread...",
+        "author_id": "user2",
+        "created_at": "2026-06-12T10:05:00.000Z",
+        "like_count": 10,
+        "retweet_count": 1,
+        "reply_count": 0,
+        "in_reply_to_tweet_id": "1234567880"
+      }
+    ]
+  }
+}
+```
+
+#### 5. `search_tweets`
 
 Search for tweets matching a query.
 
 Set `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` to route search through
 Hermes Tweet/Xquik. Set `GETXAPI_API_KEY` to route search through GetXAPI.
 Without those variables, search uses the configured Twitter API credentials.
-
 **Types:**
 ```typescript
 interface SearchTweetsRequest {

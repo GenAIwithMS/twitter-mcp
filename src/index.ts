@@ -8,12 +8,15 @@ import {
   SearchTweetsSchema,
   GetUserProfileSchema,
   GetUserProfileOutputSchema,
+  FetchThreadHistorySchema,
+  FetchThreadHistoryOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
   PostTweetWithImageRequest,
   SearchTweetsRequest,
-  GetUserProfileRequest
+  GetUserProfileRequest,
+  FetchThreadHistoryRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -87,6 +90,23 @@ server.registerTool(
       return formatSuccessResponse('User profile fetched successfully', profile);
     } catch (error) {
       return formatErrorResponse('Failed to fetch user profile', error);
+    }
+  },
+);
+
+server.registerTool(
+  'fetch_thread_history',
+  {
+    description: 'Retrieves the full conversation thread for a given tweet. Use this tool when the LLM needs to understand the context of a conversation, read previous replies and the original tweet, or analyze the full discussion flow. Input is a tweet_id. The tool first looks up the tweet to find its conversation_id, then searches for all tweets in that conversation and returns them ordered chronologically (oldest first). Each tweet includes author_id, text, timestamps, engagement metrics, and the in_reply_to_tweet_id for mapping reply relationships.',
+    inputSchema: FetchThreadHistorySchema.shape,
+    outputSchema: FetchThreadHistoryOutputSchema.shape,
+  },
+  async (request: FetchThreadHistoryRequest) => {
+    try {
+      const result = await twitterClient.fetchThreadHistory(request);
+      return formatSuccessResponse('Thread history fetched successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to fetch thread history', error);
     }
   },
 );

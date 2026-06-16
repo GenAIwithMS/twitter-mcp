@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -184,6 +184,47 @@ export class TwitterClient {
       public_metrics: user.public_metrics,
       pinned_tweet: pinnedTweet,
       recent_tweets: recentTweets,
+    };
+  }
+
+  async fetchThreadHistory(request: FetchThreadHistoryRequest) {
+    const { tweet_id } = request;
+
+    const tweetResult = await this.getTwitterClient().v2.singleTweet(tweet_id, {
+      'tweet.fields': ['conversation_id', 'created_at', 'author_id', 'text', 'public_metrics', 'referenced_tweets'],
+    });
+
+    const conversationId = tweetResult.data.conversation_id;
+    if (!conversationId) {
+      throw new Error('Tweet does not belong to a conversation thread.');
+    }
+
+    const searchResult = await this.getTwitterClient().v2.search({
+      query: `conversation_id:${conversationId}`,
+      max_results: 100,
+      'tweet.fields': ['created_at', 'author_id', 'text', 'public_metrics', 'referenced_tweets'],
+    });
+
+    const thread = (searchResult.data.data || [])
+      .map(tweet => ({
+        id: tweet.id,
+        text: tweet.text,
+        author_id: tweet.author_id,
+        created_at: tweet.created_at || '',
+        like_count: tweet.public_metrics?.like_count,
+        retweet_count: tweet.public_metrics?.retweet_count,
+        reply_count: tweet.public_metrics?.reply_count,
+        in_reply_to_tweet_id: tweet.referenced_tweets?.find(
+          rt => rt.type === 'replied_to'
+        )?.id,
+      }))
+      .sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+
+    return {
+      conversation_id: conversationId,
+      thread,
     };
   }
 

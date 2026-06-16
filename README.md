@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets
 
 ---
 
@@ -44,6 +44,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 💬 **Thread History** - Retrieve full conversation threads by tweet ID
 - 🔔 **Mention Monitoring** - Search recent mentions of the authenticated user or custom keywords
 - 🧵 **Smart Threads** - Auto-split long content into threaded tweet chains
+- 💬 **Quote Tweets** - Quote an existing tweet with AI commentary
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -85,6 +86,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Thread History](#thread-history)
   - [Mention Monitoring](#mention-monitoring)
   - [Smart Thread Publishing](#smart-thread-publishing)
+  - [Quote Tweets](#quote-tweets)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -319,6 +321,15 @@ Publish this as a thread: "Part 1: Introduction to AI\n\nPart 2: Key Concepts\n\
 
 Use double newlines to indicate tweet breaks. The tool splits by paragraph, then by sentence if needed (max 280 chars per tweet), and posts them as a connected reply chain.
 
+### Quote Tweets
+
+**Quote an existing tweet:**
+```
+Quote tweet 1234567890 with commentary: "This is an interesting perspective!"
+```
+
+The tool posts your commentary as a new tweet with the target tweet embedded as a quote beneath it.
+
 ## API Reference
 
 ### Tools
@@ -537,7 +548,43 @@ Split long content into a threaded tweet chain.
 }
 ```
 
-#### 7. `search_tweets`
+#### 7. `draft_quote_tweet`
+
+Quote an existing tweet with AI commentary.
+
+**Parameters:**
+- `target_tweet_id` (string) — ID of the tweet to quote
+- `commentary` (string, max 280) — Text to display above the quoted tweet
+
+**Returns:**
+- `id`, `text`, `author_id`, `created_at` — quote tweet details
+- `quoted_tweet_id` — the ID of the quoted tweet
+- `tweet_url` — URL to the quote tweet on X/Twitter
+
+**Example:**
+```json
+// Request:
+{
+  "target_tweet_id": "1234567890",
+  "commentary": "This is a great take on the topic!"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Quote tweet drafted successfully",
+  "data": {
+    "id": "9876543210",
+    "text": "This is a great take on the topic!",
+    "author_id": "self",
+    "created_at": "2026-06-12T12:00:00.000Z",
+    "quoted_tweet_id": "1234567890",
+    "tweet_url": "https://x.com/i/status/9876543210"
+  }
+}
+```
+
+#### 8. `search_tweets`
 
 Search for tweets matching a query.
 

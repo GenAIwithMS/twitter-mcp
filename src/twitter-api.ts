@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, PublishSmartThreadRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, PublishSmartThreadRequest, DraftQuoteTweetRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -289,6 +289,24 @@ export class TwitterClient {
     return {
       conversation_id: conversationId,
       thread,
+    };
+  }
+
+  async draftQuoteTweet(request: DraftQuoteTweetRequest) {
+    const { target_tweet_id, commentary } = request;
+
+    const tweet = await this.getTwitterClient().v2.tweet({
+      text: commentary,
+      quote_tweet_id: target_tweet_id,
+    });
+
+    return {
+      id: tweet.data.id,
+      text: tweet.data.text,
+      author_id: 'self',
+      created_at: new Date().toISOString(),
+      quoted_tweet_id: target_tweet_id,
+      tweet_url: `https://x.com/i/status/${tweet.data.id}`,
     };
   }
 

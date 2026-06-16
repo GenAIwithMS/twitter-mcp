@@ -283,6 +283,36 @@ export const PublishSmartThreadOutputSchema = z.object({
 
 export type PublishSmartThreadRequest = z.infer<typeof PublishSmartThreadSchema>;
 
+// Quote tweet schema
+export const DraftQuoteTweetSchema = z.object({
+  target_tweet_id: z
+    .string()
+    .describe(
+      'The unique numeric string ID of the existing tweet to quote. The quoted tweet will appear embedded below the commentary in the new tweet.',
+    ),
+  commentary: z
+    .string()
+    .max(280)
+    .describe(
+      'The text commentary to accompany the quoted tweet. This becomes the text of the new quote tweet, displayed above the quoted content. Maximum 280 characters.',
+    ),
+});
+
+export const DraftQuoteTweetOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    id: z.string().describe('The unique numeric string ID assigned by Twitter to the quote tweet.'),
+    text: z.string().describe('The full text content of the posted quote tweet.'),
+    author_id: z.string().describe('The Twitter user ID of the account that posted the quote tweet.'),
+    created_at: z.string().describe('ISO-8601 timestamp of when the quote tweet was created.'),
+    quoted_tweet_id: z.string().describe('The ID of the tweet that was quoted.'),
+    tweet_url: z.string().describe('URL to the quote tweet on X/Twitter.'),
+  }).describe('Container holding the created quote tweet details.'),
+});
+
+export type DraftQuoteTweetRequest = z.infer<typeof DraftQuoteTweetSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

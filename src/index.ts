@@ -14,6 +14,8 @@ import {
   SearchRecentMentionsOutputSchema,
   PublishSmartThreadSchema,
   PublishSmartThreadOutputSchema,
+  DraftQuoteTweetSchema,
+  DraftQuoteTweetOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
@@ -22,7 +24,8 @@ import {
   GetUserProfileRequest,
   FetchThreadHistoryRequest,
   SearchRecentMentionsRequest,
-  PublishSmartThreadRequest
+  PublishSmartThreadRequest,
+  DraftQuoteTweetRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -147,6 +150,23 @@ server.registerTool(
       return formatSuccessResponse('Smart thread published successfully', result);
     } catch (error) {
       return formatErrorResponse('Failed to publish smart thread', error);
+    }
+  },
+);
+
+server.registerTool(
+  'draft_quote_tweet',
+  {
+    description: 'Quote retweets an existing tweet with the LLM\'s commentary. Use this tool when the LLM needs to share an existing tweet with added perspective, endorsement, critique, or reaction—for example, quoting a news article with analysis, sharing a post with a comment, or amplifying content with context. The commentary appears as the new tweet text with the quoted tweet embedded below it. The commentary must be 280 characters or fewer. Returns the created quote tweet ID, text, and a URL to the tweet on X/Twitter.',
+    inputSchema: DraftQuoteTweetSchema.shape,
+    outputSchema: DraftQuoteTweetOutputSchema.shape,
+  },
+  async (request: DraftQuoteTweetRequest) => {
+    try {
+      const result = await twitterClient.draftQuoteTweet(request);
+      return formatSuccessResponse('Quote tweet drafted successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to draft quote tweet', error);
     }
   },
 );

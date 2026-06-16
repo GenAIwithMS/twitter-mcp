@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, PublishSmartThreadRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -290,6 +290,86 @@ export class TwitterClient {
       conversation_id: conversationId,
       thread,
     };
+  }
+
+  async publishSmartThread(request: PublishSmartThreadRequest) {
+    const { content } = request;
+    const chunks = this.chunkText(content, 280);
+
+    if (chunks.length === 0) {
+      throw new Error('No content to post after splitting.');
+    }
+
+    const postedTweets: { position: number; id: string; text: string; created_at: string }[] = [];
+    let previousTweetId: string | undefined;
+
+    for (let i = 0; i < chunks.length; i++) {
+      const tweet = await this.getTwitterClient().v2.tweet({
+        text: chunks[i],
+        reply: previousTweetId
+          ? { in_reply_to_tweet_id: previousTweetId }
+          : undefined,
+      });
+
+      const tweetData = {
+        position: i + 1,
+        id: tweet.data.id,
+        text: tweet.data.text,
+        created_at: new Date().toISOString(),
+      };
+
+      postedTweets.push(tweetData);
+      previousTweetId = tweet.data.id;
+    }
+
+    const firstTweetId = postedTweets[0].id;
+    const firstTweetUrl = `https://x.com/i/status/${firstTweetId}`;
+
+    return {
+      thread: postedTweets,
+      total_tweets: postedTweets.length,
+      first_tweet_url: firstTweetUrl,
+    };
+  }
+
+  private chunkText(text: string, maxLength: number): string[] {
+    const paragraphs = text.split(/\n\n+/);
+    const chunks: string[] = [];
+
+    for (const paragraph of paragraphs) {
+      const trimmed = paragraph.trim();
+      if (!trimmed) continue;
+
+      if (trimmed.length <= maxLength) {
+        chunks.push(trimmed);
+        continue;
+      }
+
+      const sentences = trimmed.match(/[^.!?\n]+[.!?]*\s*/g) || [trimmed];
+      let current = '';
+
+      for (const sentence of sentences) {
+        const s = sentence.trim();
+        if (!s) continue;
+
+        if (current.length + s.length + 1 <= maxLength) {
+          current = current ? `${current} ${s}` : s;
+        } else {
+          if (current) chunks.push(current);
+          if (s.length > maxLength) {
+            for (let i = 0; i < s.length; i += maxLength) {
+              chunks.push(s.slice(i, i + maxLength).trim());
+            }
+          } else {
+            current = s;
+          }
+        }
+      }
+
+      if (current) chunks.push(current);
+    }
+
+    return chunks;
   }
 
   private getTwitterClient(): TwitterApi {

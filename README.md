@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads
 
 ---
 
@@ -43,6 +43,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 👤 **User Profile Context** - Fetch comprehensive user profiles with bio, metrics, pinned tweet, and recent activity
 - 💬 **Thread History** - Retrieve full conversation threads by tweet ID
 - 🔔 **Mention Monitoring** - Search recent mentions of the authenticated user or custom keywords
+- 🧵 **Smart Threads** - Auto-split long content into threaded tweet chains
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -83,6 +84,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [User Profile Lookup](#user-profile-lookup)
   - [Thread History](#thread-history)
   - [Mention Monitoring](#mention-monitoring)
+  - [Smart Thread Publishing](#smart-thread-publishing)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -308,11 +310,20 @@ Search recent tweets about "product launch"
 
 Without a query, returns tweets mentioning the authenticated user. With a query, searches recent tweets matching it. Each result includes author, text, timestamp, and engagement metrics.
 
+### Smart Thread Publishing
+
+**Publish long content as a thread:**
+```
+Publish this as a thread: "Part 1: Introduction to AI\n\nPart 2: Key Concepts\n\nPart 3: Applications"
+```
+
+Use double newlines to indicate tweet breaks. The tool splits by paragraph, then by sentence if needed (max 280 chars per tweet), and posts them as a connected reply chain.
+
 ## API Reference
 
 ### Tools
 
-The server provides three tools that can be accessed:
+The server provides the following tools:
 
 #### 1. `post_tweet`
 
@@ -491,7 +502,42 @@ Monitor mentions of the authenticated user or search recent tweets by keyword.
 }
 ```
 
-#### 6. `search_tweets`
+#### 6. `publish_smart_thread`
+
+Split long content into a threaded tweet chain.
+
+**Parameters:**
+- `content` (string, 1–10000 chars) — Full text to publish. Use double newlines to indicate tweet breaks.
+
+**Returns:**
+- `thread` — array of posted tweets with `position`, `id`, `text`, `created_at`
+- `total_tweets` — count of tweets in the thread
+- `first_tweet_url` — URL to the first tweet on X/Twitter
+
+**Example:**
+```json
+// Request:
+{
+  "content": "Excited to announce our new product!\n\nIt has three key features:\n\nFeature 1: Lightning fast.\n\nFeature 2: Easy to use.\n\nFeature 3: Open source.\n\nCheck it out at example.com!"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Smart thread published successfully",
+  "data": {
+    "thread": [
+      { "position": 1, "id": "111", "text": "Excited to announce our new product!", "created_at": "..." },
+      { "position": 2, "id": "112", "text": "It has three key features:", "created_at": "..." },
+      { "position": 3, "id": "113", "text": "Feature 1: Lightning fast.", "created_at": "..." }
+    ],
+    "total_tweets": 3,
+    "first_tweet_url": "https://x.com/i/status/111"
+  }
+}
+```
+
+#### 7. `search_tweets`
 
 Search for tweets matching a query.
 

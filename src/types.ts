@@ -255,6 +255,34 @@ export const SearchRecentMentionsOutputSchema = z.object({
 
 export type SearchRecentMentionsRequest = z.infer<typeof SearchRecentMentionsSchema>;
 
+// Smart thread schema
+export const PublishSmartThreadSchema = z.object({
+  content: z
+    .string()
+    .min(1)
+    .max(10000)
+    .describe(
+      'The full text content to publish as a thread. Can be thousands of characters long. The tool automatically splits the content into individual tweets (each ≤280 characters) by paragraph breaks (double newlines) and posts them as a threaded reply chain. Use double newlines to indicate where you want tweet breaks to occur. Supports Unicode, emoji, hashtags, mentions, and URLs.',
+    ),
+});
+
+export const PublishSmartThreadOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    thread: z.array(z.object({
+      position: z.number().describe('The 1-based position of this tweet in the thread.'),
+      id: z.string().describe('The unique numeric string ID assigned by Twitter to the tweet.'),
+      text: z.string().describe('The text content of this tweet in the thread.'),
+      created_at: z.string().describe('ISO-8601 timestamp of when the tweet was created.'),
+    })).describe('Array of all posted tweets in the thread, in order.'),
+    total_tweets: z.number().describe('Total number of tweets posted in the thread.'),
+    first_tweet_url: z.string().describe('URL to the first tweet in the thread on X/Twitter.'),
+  }).describe('Container holding the posted thread details.'),
+});
+
+export type PublishSmartThreadRequest = z.infer<typeof PublishSmartThreadSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

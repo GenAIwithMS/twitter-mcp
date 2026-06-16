@@ -12,6 +12,8 @@ import {
   FetchThreadHistoryOutputSchema,
   SearchRecentMentionsSchema,
   SearchRecentMentionsOutputSchema,
+  PublishSmartThreadSchema,
+  PublishSmartThreadOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
@@ -19,7 +21,8 @@ import {
   SearchTweetsRequest,
   GetUserProfileRequest,
   FetchThreadHistoryRequest,
-  SearchRecentMentionsRequest
+  SearchRecentMentionsRequest,
+  PublishSmartThreadRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -127,6 +130,23 @@ server.registerTool(
       return formatSuccessResponse('Recent mentions fetched successfully', result);
     } catch (error) {
       return formatErrorResponse('Failed to fetch recent mentions', error);
+    }
+  },
+);
+
+server.registerTool(
+  'publish_smart_thread',
+  {
+    description: 'Splits long AI-generated text into multiple tweets (each ≤280 characters) and posts them as a threaded reply chain. Use this tool when the LLM needs to publish content that exceeds the 280-character single tweet limit—for example, announcements, tutorials, story threads, listicles, or any long-form content. The content is split first by paragraph breaks (double newlines) then by sentence boundaries. Each chunk is posted in sequence as a reply to the previous tweet, forming a connected thread. Returns the full thread with tweet IDs and a URL to the first tweet.',
+    inputSchema: PublishSmartThreadSchema.shape,
+    outputSchema: PublishSmartThreadOutputSchema.shape,
+  },
+  async (request: PublishSmartThreadRequest) => {
+    try {
+      const result = await twitterClient.publishSmartThread(request);
+      return formatSuccessResponse('Smart thread published successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to publish smart thread', error);
     }
   },
 );

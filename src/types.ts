@@ -187,6 +187,132 @@ export const GetUserProfileOutputSchema = z.object({
 
 export type GetUserProfileRequest = z.infer<typeof GetUserProfileSchema>;
 
+// Thread history schema
+export const FetchThreadHistorySchema = z.object({
+  tweet_id: z.string().describe(
+    'The unique numeric string ID of the tweet to retrieve the conversation thread for. The tool will look up the tweet, find its conversation_id, and return all tweets in that conversation thread chronologically.',
+  ),
+});
+
+export const FetchThreadHistoryOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    conversation_id: z.string().describe('The ID of the conversation thread this tweet belongs to.'),
+    thread: z.array(z.object({
+      id: z.string().describe('The unique numeric string ID of the tweet.'),
+      text: z.string().describe('The full text content of the tweet.'),
+      author_id: z.string().describe('The Twitter user ID of the tweet author.'),
+      created_at: z.string().describe('ISO-8601 timestamp of tweet creation.'),
+      like_count: z.number().optional().describe('Number of likes on the tweet.'),
+      retweet_count: z.number().optional().describe('Number of retweets of the tweet.'),
+      reply_count: z.number().optional().describe('Number of replies to the tweet.'),
+      in_reply_to_tweet_id: z.string().optional().describe('The tweet ID this tweet is replying to, if any.'),
+    })).describe('Array of tweets in the conversation, ordered chronologically (oldest first).'),
+  }).describe('Container holding the conversation ID and ordered thread array.'),
+});
+
+export type FetchThreadHistoryRequest = z.infer<typeof FetchThreadHistorySchema>;
+
+// Search recent mentions schema
+export const SearchRecentMentionsSchema = z.object({
+  query: z
+    .string()
+    .optional()
+    .describe(
+      'Optional search query string. When provided, uses the Twitter recent search endpoint to find tweets matching the query. Supports the full Twitter advanced search syntax. When omitted, fetches tweets that mention the authenticated user\'s account.',
+    ),
+  max_results: z
+    .number()
+    .min(5)
+    .max(100)
+    .default(10)
+    .describe(
+      'Maximum number of mention/search results to return. Must be between 5 and 100. Defaults to 10.',
+    ),
+});
+
+export const SearchRecentMentionsOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    tweets: z.array(z.object({
+      id: z.string().describe('The unique numeric string ID of the tweet.'),
+      text: z.string().describe('The full text content of the tweet.'),
+      author_id: z.string().describe('The Twitter user ID of the tweet author.'),
+      author_username: z.string().optional().describe('The @handle of the tweet author.'),
+      created_at: z.string().describe('ISO-8601 timestamp of tweet creation.'),
+      like_count: z.number().optional().describe('Number of likes on the tweet.'),
+      retweet_count: z.number().optional().describe('Number of retweets of the tweet.'),
+      reply_count: z.number().optional().describe('Number of replies to the tweet.'),
+    })).describe('Array of tweets matching the mention/search query.'),
+    meta: z.object({
+      result_count: z.number().describe('The number of tweets returned in this result set.'),
+      next_token: z.string().optional().describe('A pagination token for fetching the next page of results.'),
+    }).describe('Metadata about the search result.'),
+  }).describe('Container holding the matched tweets and metadata.'),
+});
+
+export type SearchRecentMentionsRequest = z.infer<typeof SearchRecentMentionsSchema>;
+
+// Smart thread schema
+export const PublishSmartThreadSchema = z.object({
+  content: z
+    .string()
+    .min(1)
+    .max(10000)
+    .describe(
+      'The full text content to publish as a thread. Can be thousands of characters long. The tool automatically splits the content into individual tweets (each ≤280 characters) by paragraph breaks (double newlines) and posts them as a threaded reply chain. Use double newlines to indicate where you want tweet breaks to occur. Supports Unicode, emoji, hashtags, mentions, and URLs.',
+    ),
+});
+
+export const PublishSmartThreadOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    thread: z.array(z.object({
+      position: z.number().describe('The 1-based position of this tweet in the thread.'),
+      id: z.string().describe('The unique numeric string ID assigned by Twitter to the tweet.'),
+      text: z.string().describe('The text content of this tweet in the thread.'),
+      created_at: z.string().describe('ISO-8601 timestamp of when the tweet was created.'),
+    })).describe('Array of all posted tweets in the thread, in order.'),
+    total_tweets: z.number().describe('Total number of tweets posted in the thread.'),
+    first_tweet_url: z.string().describe('URL to the first tweet in the thread on X/Twitter.'),
+  }).describe('Container holding the posted thread details.'),
+});
+
+export type PublishSmartThreadRequest = z.infer<typeof PublishSmartThreadSchema>;
+
+// Quote tweet schema
+export const DraftQuoteTweetSchema = z.object({
+  target_tweet_id: z
+    .string()
+    .describe(
+      'The unique numeric string ID of the existing tweet to quote. The quoted tweet will appear embedded below the commentary in the new tweet.',
+    ),
+  commentary: z
+    .string()
+    .max(280)
+    .describe(
+      'The text commentary to accompany the quoted tweet. This becomes the text of the new quote tweet, displayed above the quoted content. Maximum 280 characters.',
+    ),
+});
+
+export const DraftQuoteTweetOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    id: z.string().describe('The unique numeric string ID assigned by Twitter to the quote tweet.'),
+    text: z.string().describe('The full text content of the posted quote tweet.'),
+    author_id: z.string().describe('The Twitter user ID of the account that posted the quote tweet.'),
+    created_at: z.string().describe('ISO-8601 timestamp of when the quote tweet was created.'),
+    quoted_tweet_id: z.string().describe('The ID of the tweet that was quoted.'),
+    tweet_url: z.string().describe('URL to the quote tweet on X/Twitter.'),
+  }).describe('Container holding the created quote tweet details.'),
+});
+
+export type DraftQuoteTweetRequest = z.infer<typeof DraftQuoteTweetSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

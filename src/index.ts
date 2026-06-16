@@ -8,12 +8,24 @@ import {
   SearchTweetsSchema,
   GetUserProfileSchema,
   GetUserProfileOutputSchema,
+  FetchThreadHistorySchema,
+  FetchThreadHistoryOutputSchema,
+  SearchRecentMentionsSchema,
+  SearchRecentMentionsOutputSchema,
+  PublishSmartThreadSchema,
+  PublishSmartThreadOutputSchema,
+  DraftQuoteTweetSchema,
+  DraftQuoteTweetOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
   PostTweetWithImageRequest,
   SearchTweetsRequest,
-  GetUserProfileRequest
+  GetUserProfileRequest,
+  FetchThreadHistoryRequest,
+  SearchRecentMentionsRequest,
+  PublishSmartThreadRequest,
+  DraftQuoteTweetRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -87,6 +99,74 @@ server.registerTool(
       return formatSuccessResponse('User profile fetched successfully', profile);
     } catch (error) {
       return formatErrorResponse('Failed to fetch user profile', error);
+    }
+  },
+);
+
+server.registerTool(
+  'fetch_thread_history',
+  {
+    description: 'Retrieves the full conversation thread for a given tweet. Use this tool when the LLM needs to understand the context of a conversation, read previous replies and the original tweet, or analyze the full discussion flow. Input is a tweet_id. The tool first looks up the tweet to find its conversation_id, then searches for all tweets in that conversation and returns them ordered chronologically (oldest first). Each tweet includes author_id, text, timestamps, engagement metrics, and the in_reply_to_tweet_id for mapping reply relationships.',
+    inputSchema: FetchThreadHistorySchema.shape,
+    outputSchema: FetchThreadHistoryOutputSchema.shape,
+  },
+  async (request: FetchThreadHistoryRequest) => {
+    try {
+      const result = await twitterClient.fetchThreadHistory(request);
+      return formatSuccessResponse('Thread history fetched successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to fetch thread history', error);
+    }
+  },
+);
+
+server.registerTool(
+  'search_recent_mentions',
+  {
+    description: 'Searches for recent tweets mentioning the authenticated user or matching a custom query. When no query is provided, fetches tweets that mention the authenticated account. When a query is provided, uses the Twitter recent search API to find matching tweets. Use this tool when the LLM needs to monitor mentions of the user, track brand/conversation mentions, or search for recent tweets on a topic. Each result includes the tweet text, author info, timestamp, and engagement metrics. Returns up to max_results tweets (default 10, max 100).',
+    inputSchema: SearchRecentMentionsSchema.shape,
+    outputSchema: SearchRecentMentionsOutputSchema.shape,
+  },
+  async (request: SearchRecentMentionsRequest) => {
+    try {
+      const result = await twitterClient.searchRecentMentions(request);
+      return formatSuccessResponse('Recent mentions fetched successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to fetch recent mentions', error);
+    }
+  },
+);
+
+server.registerTool(
+  'publish_smart_thread',
+  {
+    description: 'Splits long AI-generated text into multiple tweets (each ≤280 characters) and posts them as a threaded reply chain. Use this tool when the LLM needs to publish content that exceeds the 280-character single tweet limit—for example, announcements, tutorials, story threads, listicles, or any long-form content. The content is split first by paragraph breaks (double newlines) then by sentence boundaries. Each chunk is posted in sequence as a reply to the previous tweet, forming a connected thread. Returns the full thread with tweet IDs and a URL to the first tweet.',
+    inputSchema: PublishSmartThreadSchema.shape,
+    outputSchema: PublishSmartThreadOutputSchema.shape,
+  },
+  async (request: PublishSmartThreadRequest) => {
+    try {
+      const result = await twitterClient.publishSmartThread(request);
+      return formatSuccessResponse('Smart thread published successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to publish smart thread', error);
+    }
+  },
+);
+
+server.registerTool(
+  'draft_quote_tweet',
+  {
+    description: 'Quote retweets an existing tweet with the LLM\'s commentary. Use this tool when the LLM needs to share an existing tweet with added perspective, endorsement, critique, or reaction—for example, quoting a news article with analysis, sharing a post with a comment, or amplifying content with context. The commentary appears as the new tweet text with the quoted tweet embedded below it. The commentary must be 280 characters or fewer. Returns the created quote tweet ID, text, and a URL to the tweet on X/Twitter.',
+    inputSchema: DraftQuoteTweetSchema.shape,
+    outputSchema: DraftQuoteTweetOutputSchema.shape,
+  },
+  async (request: DraftQuoteTweetRequest) => {
+    try {
+      const result = await twitterClient.draftQuoteTweet(request);
+      return formatSuccessResponse('Quote tweet drafted successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to draft quote tweet', error);
     }
   },
 );

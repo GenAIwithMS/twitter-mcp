@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets
 
 ---
 
@@ -41,6 +41,10 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🖼️ **Image Support** - Post tweets with images (JPG, PNG, GIF, WEBP)
 - 🔍 **Search Tweets** - Find and analyze tweets by query
 - 👤 **User Profile Context** - Fetch comprehensive user profiles with bio, metrics, pinned tweet, and recent activity
+- 💬 **Thread History** - Retrieve full conversation threads by tweet ID
+- 🔔 **Mention Monitoring** - Search recent mentions of the authenticated user or custom keywords
+- 🧵 **Smart Threads** - Auto-split long content into threaded tweet chains
+- 💬 **Quote Tweets** - Quote an existing tweet with AI commentary
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -79,6 +83,10 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Posting with Images](#posting-with-images)
   - [Searching Tweets](#searching-tweets)
   - [User Profile Lookup](#user-profile-lookup)
+  - [Thread History](#thread-history)
+  - [Mention Monitoring](#mention-monitoring)
+  - [Smart Thread Publishing](#smart-thread-publishing)
+  - [Quote Tweets](#quote-tweets)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -285,11 +293,48 @@ Look up the profile of "elonmusk"
 
 The tool returns bio, profile metadata, follower/following metrics, pinned tweet, and the 5 most recent original tweets.
 
+### Thread History
+
+**Get conversation thread:**
+```
+Show me the full conversation thread for tweet 1234567890
+```
+
+The tool finds the conversation the tweet belongs to and returns all tweets ordered chronologically, with author IDs, text, timestamps, and reply relationships.
+
+### Mention Monitoring
+
+**Check mentions and search:**
+```
+What are the latest mentions of my account?
+Search recent tweets about "product launch"
+```
+
+Without a query, returns tweets mentioning the authenticated user. With a query, searches recent tweets matching it. Each result includes author, text, timestamp, and engagement metrics.
+
+### Smart Thread Publishing
+
+**Publish long content as a thread:**
+```
+Publish this as a thread: "Part 1: Introduction to AI\n\nPart 2: Key Concepts\n\nPart 3: Applications"
+```
+
+Use double newlines to indicate tweet breaks. The tool splits by paragraph, then by sentence if needed (max 280 chars per tweet), and posts them as a connected reply chain.
+
+### Quote Tweets
+
+**Quote an existing tweet:**
+```
+Quote tweet 1234567890 with commentary: "This is an interesting perspective!"
+```
+
+The tool posts your commentary as a new tweet with the target tweet embedded as a quote beneath it.
+
 ## API Reference
 
 ### Tools
 
-The server provides three tools that can be accessed:
+The server provides the following tools:
 
 #### 1. `post_tweet`
 
@@ -368,15 +413,184 @@ Fetch a comprehensive Twitter/X user profile.
   }
 }
 ```
+ 
 
-#### 4. `search_tweets`
+#### 4. `fetch_thread_history`
+
+Retrieve the full conversation thread for a tweet.
+
+**Parameters:**
+- `tweet_id` (string) — ID of the tweet in the thread
+
+**Returns:**
+- `conversation_id` — the thread's conversation ID
+- `thread` — array of tweets ordered oldest-first with `id`, `text`, `author_id`, `created_at`, engagement metrics, and `in_reply_to_tweet_id`
+
+**Example:**
+```json
+// Request:
+{
+  "tweet_id": "1234567890"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Thread history fetched successfully",
+  "data": {
+    "conversation_id": "1234567890",
+    "thread": [
+      {
+        "id": "1234567880",
+        "text": "Original post...",
+        "author_id": "user1",
+        "created_at": "2026-06-12T10:00:00.000Z",
+        "like_count": 120,
+        "retweet_count": 30,
+        "reply_count": 5,
+        "in_reply_to_tweet_id": null
+      },
+      {
+        "id": "1234567890",
+        "text": "Reply to the thread...",
+        "author_id": "user2",
+        "created_at": "2026-06-12T10:05:00.000Z",
+        "like_count": 10,
+        "retweet_count": 1,
+        "reply_count": 0,
+        "in_reply_to_tweet_id": "1234567880"
+      }
+    ]
+  }
+}
+```
+
+#### 5. `search_recent_mentions`
+
+Monitor mentions of the authenticated user or search recent tweets by keyword.
+
+**Parameters:**
+- `query` (string, optional) — Custom search query. Omitting returns mentions of your account.
+- `max_results` (number, optional, default 10) — Results to return (5–100).
+
+**Returns:**
+- `tweets` — array with `id`, `text`, `author_id`, `author_username`, `created_at`, `like_count`, `retweet_count`, `reply_count`
+- `meta` — `result_count` and optional `next_token` for pagination
+
+**Example:**
+```json
+// Request (mentions):
+{
+  "max_results": 10
+}
+
+// Request (custom search):
+{
+  "query": "product launch",
+  "max_results": 20
+}
+
+// Response:
+{
+  "status": "success",
+  "data": {
+    "tweets": [
+      {
+        "id": "1234567890",
+        "text": "@user Great post!",
+        "author_id": "98765",
+        "author_username": "follower1",
+        "created_at": "2026-06-12T12:00:00.000Z",
+        "like_count": 5,
+        "retweet_count": 1,
+        "reply_count": 0
+      }
+    ],
+    "meta": {
+      "result_count": 10
+    }
+  }
+}
+```
+
+#### 6. `publish_smart_thread`
+
+Split long content into a threaded tweet chain.
+
+**Parameters:**
+- `content` (string, 1–10000 chars) — Full text to publish. Use double newlines to indicate tweet breaks.
+
+**Returns:**
+- `thread` — array of posted tweets with `position`, `id`, `text`, `created_at`
+- `total_tweets` — count of tweets in the thread
+- `first_tweet_url` — URL to the first tweet on X/Twitter
+
+**Example:**
+```json
+// Request:
+{
+  "content": "Excited to announce our new product!\n\nIt has three key features:\n\nFeature 1: Lightning fast.\n\nFeature 2: Easy to use.\n\nFeature 3: Open source.\n\nCheck it out at example.com!"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Smart thread published successfully",
+  "data": {
+    "thread": [
+      { "position": 1, "id": "111", "text": "Excited to announce our new product!", "created_at": "..." },
+      { "position": 2, "id": "112", "text": "It has three key features:", "created_at": "..." },
+      { "position": 3, "id": "113", "text": "Feature 1: Lightning fast.", "created_at": "..." }
+    ],
+    "total_tweets": 3,
+    "first_tweet_url": "https://x.com/i/status/111"
+  }
+}
+```
+
+#### 7. `draft_quote_tweet`
+
+Quote an existing tweet with AI commentary.
+
+**Parameters:**
+- `target_tweet_id` (string) — ID of the tweet to quote
+- `commentary` (string, max 280) — Text to display above the quoted tweet
+
+**Returns:**
+- `id`, `text`, `author_id`, `created_at` — quote tweet details
+- `quoted_tweet_id` — the ID of the quoted tweet
+- `tweet_url` — URL to the quote tweet on X/Twitter
+
+**Example:**
+```json
+// Request:
+{
+  "target_tweet_id": "1234567890",
+  "commentary": "This is a great take on the topic!"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Quote tweet drafted successfully",
+  "data": {
+    "id": "9876543210",
+    "text": "This is a great take on the topic!",
+    "author_id": "self",
+    "created_at": "2026-06-12T12:00:00.000Z",
+    "quoted_tweet_id": "1234567890",
+    "tweet_url": "https://x.com/i/status/9876543210"
+  }
+}
+```
+
+#### 8. `search_tweets`
 
 Search for tweets matching a query.
 
 Set `XQUIK_API_KEY` or `HERMES_TWEET_API_KEY` to route search through
 Hermes Tweet/Xquik. Set `GETXAPI_API_KEY` to route search through GetXAPI.
 Without those variables, search uses the configured Twitter API credentials.
-
 **Types:**
 ```typescript
 interface SearchTweetsRequest {

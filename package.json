@@ -1,6 +1,6 @@
 {
   "name": "@muhammadsiddiq/twitter-mcp",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Universal integration setup assistant and Model Context Protocol server for Twitter/X",
   "type": "module",
   "main": "build/index.js",

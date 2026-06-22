@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets • Extract media
 
 ---
 
@@ -45,6 +45,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🔔 **Mention Monitoring** - Search recent mentions of the authenticated user or custom keywords
 - 🧵 **Smart Threads** - Auto-split long content into threaded tweet chains
 - 💬 **Quote Tweets** - Quote an existing tweet with AI commentary
+- 🎬 **Media Extraction** - Extract direct media URLs from tweets (images, video, GIF)
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -87,6 +88,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Mention Monitoring](#mention-monitoring)
   - [Smart Thread Publishing](#smart-thread-publishing)
   - [Quote Tweets](#quote-tweets)
+  - [Media Extraction](#media-extraction)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -329,6 +331,15 @@ Quote tweet 1234567890 with commentary: "This is an interesting perspective!"
 ```
 
 The tool posts your commentary as a new tweet with the target tweet embedded as a quote beneath it.
+
+### Media Extraction
+
+**Extract media from a tweet:**
+```
+Get the media URLs from tweet 1234567890
+```
+
+Returns direct URLs for all attached images, video variants (with bit rates), and animated GIFs.
 
 ## API Reference
 
@@ -584,7 +595,59 @@ Quote an existing tweet with AI commentary.
 }
 ```
 
-#### 8. `search_tweets`
+#### 8. `media_extraction_helper`
+
+Extract direct media URLs from a tweet.
+
+**Parameters:**
+- `tweet_id` (string) — ID of the tweet to extract media from
+
+**Returns:**
+- `tweet_id` — the source tweet ID
+- `media` — array of media items, each with `type`, `url`, `preview_image_url`, `width`, `height`, `duration_ms`, and `variants` (for videos/GIFs)
+- `media_count` — total count
+
+**Example:**
+```json
+// Request:
+{
+  "tweet_id": "1234567890"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Media extracted successfully",
+  "data": {
+    "tweet_id": "1234567890",
+    "media": [
+      {
+        "type": "photo",
+        "url": "https://pbs.twimg.com/media/ABC123.jpg",
+        "width": 1200,
+        "height": 800
+      },
+      {
+        "type": "video",
+        "preview_image_url": "https://pbs.twimg.com/media/DEF456.jpg",
+        "duration_ms": 30000,
+        "width": 1920,
+        "height": 1080,
+        "variants": [
+          {
+            "url": "https://video.twimg.com/video.mp4",
+            "content_type": "video/mp4",
+            "bit_rate": 2000000
+          }
+        ]
+      }
+    ],
+    "media_count": 2
+  }
+}
+```
+
+#### 9. `search_tweets`
 
 Search for tweets matching a query.
 

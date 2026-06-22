@@ -16,6 +16,8 @@ import {
   PublishSmartThreadOutputSchema,
   DraftQuoteTweetSchema,
   DraftQuoteTweetOutputSchema,
+  MediaExtractionHelperSchema,
+  MediaExtractionHelperOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
@@ -25,7 +27,8 @@ import {
   FetchThreadHistoryRequest,
   SearchRecentMentionsRequest,
   PublishSmartThreadRequest,
-  DraftQuoteTweetRequest
+  DraftQuoteTweetRequest,
+  MediaExtractionHelperRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -167,6 +170,23 @@ server.registerTool(
       return formatSuccessResponse('Quote tweet drafted successfully', result);
     } catch (error) {
       return formatErrorResponse('Failed to draft quote tweet', error);
+    }
+  },
+);
+
+server.registerTool(
+  'media_extraction_helper',
+  {
+    description: 'Extracts direct media URLs (images, videos, animated GIFs) from a tweet. Use this tool when the LLM needs to access media content from a tweet—for example, to view an attached image, download a video, analyze media metadata, or pass media URLs to other tools. For photos, returns the direct image URL. For videos and animated GIFs, returns all available variants with direct URLs, bit rates, and content types. The highest bitrate MP4 variant is typically the best quality video. Returns the tweet ID, media array with type/URL/dimensions/duration, and total media count.',
+    inputSchema: MediaExtractionHelperSchema.shape,
+    outputSchema: MediaExtractionHelperOutputSchema.shape,
+  },
+  async (request: MediaExtractionHelperRequest) => {
+    try {
+      const result = await twitterClient.extractMedia(request);
+      return formatSuccessResponse('Media extracted successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to extract media', error);
     }
   },
 );

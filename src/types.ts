@@ -313,6 +313,37 @@ export const DraftQuoteTweetOutputSchema = z.object({
 
 export type DraftQuoteTweetRequest = z.infer<typeof DraftQuoteTweetSchema>;
 
+// Media extraction schema
+export const MediaExtractionHelperSchema = z.object({
+  tweet_id: z.string().describe(
+    'The unique numeric string ID of the tweet to extract media from. The tool will fetch the tweet with media expansions and return direct URLs for all attached images, videos, and animated GIFs.',
+  ),
+});
+
+export const MediaExtractionHelperOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    tweet_id: z.string().describe('The ID of the tweet that media was extracted from.'),
+    media: z.array(z.object({
+      type: z.string().describe('The media type: "photo", "video", or "animated_gif".'),
+      url: z.string().optional().describe('Direct URL for photos and preview image for videos/GIFs.'),
+      preview_image_url: z.string().optional().describe('Preview/thumbnail image URL for videos and animated GIFs.'),
+      width: z.number().optional().describe('Width of the media in pixels.'),
+      height: z.number().optional().describe('Height of the media in pixels.'),
+      duration_ms: z.number().optional().describe('Duration of the video/animated GIF in milliseconds.'),
+      variants: z.array(z.object({
+        url: z.string().describe('Direct URL to the media variant.'),
+        content_type: z.string().describe('MIME type of the variant (e.g. "video/mp4", "image/jpeg").'),
+        bit_rate: z.number().optional().describe('Bit rate in bits per second for video variants.'),
+      })).optional().describe('Available media variants (for videos and animated GIFs). Includes all quality options with direct URLs.'),
+    })).describe('Array of media items attached to the tweet.'),
+    media_count: z.number().describe('Total number of media items attached to the tweet.'),
+  }).describe('Container holding the extracted media URLs and metadata.'),
+});
+
+export type MediaExtractionHelperRequest = z.infer<typeof MediaExtractionHelperSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

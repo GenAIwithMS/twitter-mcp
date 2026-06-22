@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+
+### Added
+- New `media_extraction_helper` tool for extracting direct media URLs
+  (images, video, animated GIF) from tweets with variant metadata.
+
 ## [0.3.9] - 2026-06-16
 
 ### Added

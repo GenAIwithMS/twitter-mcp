@@ -18,6 +18,8 @@ import {
   DraftQuoteTweetOutputSchema,
   MediaExtractionHelperSchema,
   MediaExtractionHelperOutputSchema,
+  EngageWithTweetSchema,
+  EngageWithTweetOutputSchema,
   PostTweetOutputSchema,
   SearchTweetsOutputSchema,
   PostTweetRequest,
@@ -28,7 +30,8 @@ import {
   SearchRecentMentionsRequest,
   PublishSmartThreadRequest,
   DraftQuoteTweetRequest,
-  MediaExtractionHelperRequest
+  MediaExtractionHelperRequest,
+  EngageWithTweetRequest
 } from './types.js';
 
 const twitterClient = new TwitterClient();
@@ -187,6 +190,23 @@ server.registerTool(
       return formatSuccessResponse('Media extracted successfully', result);
     } catch (error) {
       return formatErrorResponse('Failed to extract media', error);
+    }
+  },
+);
+
+server.registerTool(
+  'engage_with_tweet',
+  {
+    description: 'Performs quick engagement actions on a tweet: like (favourite), retweet (repost), or bookmark (save for later). Use this tool when the LLM needs to interact with content on X/Twitter—for example, liking a post to show appreciation, retweeting to share with followers, or bookmarking to save for later reference. The action parameter must be one of "like", "retweet", or "bookmark". Returns a success boolean confirming the action was performed.',
+    inputSchema: EngageWithTweetSchema.shape,
+    outputSchema: EngageWithTweetOutputSchema.shape,
+  },
+  async (request: EngageWithTweetRequest) => {
+    try {
+      const result = await twitterClient.engageWithTweet(request);
+      return formatSuccessResponse('Engagement action performed successfully', result);
+    } catch (error) {
+      return formatErrorResponse('Failed to perform engagement action', error);
     }
   },
 );

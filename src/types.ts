@@ -344,6 +344,28 @@ export const MediaExtractionHelperOutputSchema = z.object({
 
 export type MediaExtractionHelperRequest = z.infer<typeof MediaExtractionHelperSchema>;
 
+// Engage with tweet schema
+export const EngageWithTweetSchema = z.object({
+  tweet_id: z.string().describe(
+    'The unique numeric string ID of the tweet to interact with.',
+  ),
+  action: z.enum(['like', 'retweet', 'bookmark']).describe(
+    'The engagement action to perform: "like" to favourite the tweet, "retweet" to repost it, or "bookmark" to save it to your bookmarks for later.',
+  ),
+});
+
+export const EngageWithTweetOutputSchema = z.object({
+  status: z.string().describe('Indicates the outcome of the operation: "success" or "error".'),
+  message: z.string().describe('A human-readable summary of the result.'),
+  data: z.object({
+    tweet_id: z.string().describe('The ID of the tweet that was interacted with.'),
+    action: z.string().describe('The action that was performed: "like", "retweet", or "bookmark".'),
+    success: z.boolean().describe('Whether the engagement action was successfully performed.'),
+  }).describe('Container holding the engagement result.'),
+});
+
+export type EngageWithTweetRequest = z.infer<typeof EngageWithTweetSchema>;
+
 // Tool schemas
 export type PostTweetRequest = z.infer<typeof PostTweetSchema>;
 export type PostTweetWithImageRequest = z.infer<typeof PostTweetWithImageSchema>;

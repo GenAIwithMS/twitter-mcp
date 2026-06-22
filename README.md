@@ -4,7 +4,7 @@
 
 ### Connect AI assistants to X (Twitter) using the Model Context Protocol
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets • Extract media
+ Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets • Extract media • Like, retweet & bookmark
 
 ---
 
@@ -46,6 +46,7 @@ A Model Context Protocol (MCP) server that enables seamless interaction with Twi
 - 🧵 **Smart Threads** - Auto-split long content into threaded tweet chains
 - 💬 **Quote Tweets** - Quote an existing tweet with AI commentary
 - 🎬 **Media Extraction** - Extract direct media URLs from tweets (images, video, GIF)
+- ❤️ **Engagement** - Like, retweet, or bookmark tweets directly
 - 🔎 **Optional Xquik Search** - Use Hermes Tweet/Xquik for read-only search
 - 💬 **Reply to Tweets** - Engage in conversations
 - 🔐 **Secure Authentication** - OAuth 1.0a authentication
@@ -89,6 +90,7 @@ Twitter MCP makes it easy for AI assistants to interact with X (Twitter) through
   - [Smart Thread Publishing](#smart-thread-publishing)
   - [Quote Tweets](#quote-tweets)
   - [Media Extraction](#media-extraction)
+  - [Engagement](#engagement)
 - [API Reference](#api-reference)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -340,6 +342,17 @@ Get the media URLs from tweet 1234567890
 ```
 
 Returns direct URLs for all attached images, video variants (with bit rates), and animated GIFs.
+
+### Engagement
+
+**Interact with a tweet:**
+```
+Like tweet 1234567890
+Retweet the post by user
+Bookmark that tweet for later
+```
+
+Supports three actions: `like`, `retweet`, and `bookmark`. Returns a success confirmation.
 
 ## API Reference
 
@@ -647,7 +660,38 @@ Extract direct media URLs from a tweet.
 }
 ```
 
-#### 9. `search_tweets`
+#### 9. `engage_with_tweet`
+
+Like, retweet, or bookmark a tweet.
+
+**Parameters:**
+- `tweet_id` (string) — ID of the tweet to interact with
+- `action` (enum: `"like"` | `"retweet"` | `"bookmark"`) — Action to perform
+
+**Returns:**
+- `tweet_id`, `action`, `success` (boolean)
+
+**Example:**
+```json
+// Request:
+{
+  "tweet_id": "1234567890",
+  "action": "like"
+}
+
+// Response:
+{
+  "status": "success",
+  "message": "Engagement action performed successfully",
+  "data": {
+    "tweet_id": "1234567890",
+    "action": "like",
+    "success": true
+  }
+}
+```
+
+#### 10. `search_tweets`
 
 Search for tweets matching a query.
 

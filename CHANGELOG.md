@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.3.10] - 2026-06-16
 
 ### Added
+- New `engage_with_tweet` tool for liking, retweeting, or bookmarking tweets.
 - New `media_extraction_helper` tool for extracting direct media URLs
   (images, video, animated GIF) from tweets with variant metadata.
 

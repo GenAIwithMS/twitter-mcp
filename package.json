@@ -5,7 +5,7 @@
   "type": "module",
   "main": "build/index.js",
   "bin": {
-    "x-mcp": "./build/universal-installer.js"
+    "twitter-mcp": "./build/universal-installer.js"
   },
   "files": [
     "build",

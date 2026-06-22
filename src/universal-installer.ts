@@ -149,7 +149,7 @@ export async function startInstaller() {
       }
 
       if (!tomlData.mcp_servers) tomlData.mcp_servers = {};
-      tomlData.mcp_servers['x-mcp'] = {
+      tomlData.mcp_servers['twitter-mcp'] = {
         command: MCP_SERVER_COMMAND,
         args: MCP_SERVER_ARGS,
         env: credentials
@@ -167,7 +167,7 @@ export async function startInstaller() {
       }
 
       if (!yamlData.mcp_servers) yamlData.mcp_servers = {};
-      yamlData.mcp_servers['x-mcp'] = {
+      yamlData.mcp_servers['twitter-mcp'] = {
         command: MCP_SERVER_COMMAND,
         args: MCP_SERVER_ARGS,
         env: credentials
@@ -187,14 +187,14 @@ export async function startInstaller() {
 
       if (selectedSchema === 'mcpServers') {
         if (!jsonData.mcpServers) jsonData.mcpServers = {};
-        jsonData.mcpServers['x-mcp'] = {
+        jsonData.mcpServers['twitter-mcp'] = {
           command: MCP_SERVER_COMMAND,
           args: MCP_SERVER_ARGS,
           env: credentials
         };
       } else if (selectedSchema === 'mcp') {
         if (!jsonData.mcp) jsonData.mcp = {};
-        jsonData.mcp['x-mcp'] = {
+        jsonData.mcp['twitter-mcp'] = {
           type: "local",
           command: [MCP_SERVER_COMMAND, ...MCP_SERVER_ARGS],
           enabled: true,

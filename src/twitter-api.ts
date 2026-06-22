@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, PublishSmartThreadRequest, DraftQuoteTweetRequest, Tweet } from './types.js';
+import { PostTweetRequest, PostTweetWithImageRequest, SearchTweetsRequest, GetUserProfileRequest, FetchThreadHistoryRequest, SearchRecentMentionsRequest, PublishSmartThreadRequest, DraftQuoteTweetRequest, MediaExtractionHelperRequest, EngageWithTweetRequest, Tweet } from './types.js';
 import { hasXquikConfig, searchTweetsWithXquik } from './xquik-client.js';
 import { hasGetXAPIConfig, searchTweetsWithGetXAPI } from './getxapi-client.js';
 import * as fs from 'fs';
@@ -388,6 +388,65 @@ export class TwitterClient {
     }
 
     return chunks;
+  }
+
+  async extractMedia(request: MediaExtractionHelperRequest) {
+    const { tweet_id } = request;
+
+    const result = await this.getTwitterClient().v2.singleTweet(tweet_id, {
+      expansions: ['attachments.media_keys'],
+      'media.fields': ['url', 'preview_image_url', 'type', 'width', 'height', 'duration_ms', 'variants'],
+    });
+
+    const mediaItems = result.includes?.media || [];
+
+    return {
+      tweet_id,
+      media: mediaItems.map(media => {
+        const item: any = {
+          type: media.type,
+          url: media.url,
+          preview_image_url: media.preview_image_url,
+          width: media.width,
+          height: media.height,
+          duration_ms: media.duration_ms,
+        };
+
+        if (media.variants && media.variants.length > 0) {
+          item.variants = media.variants.map(v => ({
+            url: v.url,
+            content_type: v.content_type,
+            bit_rate: v.bit_rate,
+          }));
+        }
+
+        return item;
+      }),
+      media_count: mediaItems.length,
+    };
+  }
+
+  async engageWithTweet(request: EngageWithTweetRequest) {
+    const { tweet_id, action } = request;
+
+    switch (action) {
+      case 'like': {
+        const user = await this.getTwitterClient().v1.verifyCredentials();
+        const result = await this.getTwitterClient().v2.like(user.id_str, tweet_id);
+        return { tweet_id, action, success: result.data.liked };
+      }
+      case 'retweet': {
+        const user = await this.getTwitterClient().v1.verifyCredentials();
+        const result = await this.getTwitterClient().v2.retweet(user.id_str, tweet_id);
+        return { tweet_id, action, success: result.data.retweeted };
+      }
+      case 'bookmark': {
+        const result = await this.getTwitterClient().v2.bookmark(tweet_id);
+        return { tweet_id, action, success: result.data.bookmarked };
+      }
+      default:
+        throw new Error(`Unknown action: ${action}`);
+    }
   }
 
   private getTwitterClient(): TwitterApi {

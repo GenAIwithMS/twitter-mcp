@@ -1,6 +1,6 @@
 {
   "name": "@muhammadsiddiq/twitter-mcp",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "Universal integration setup assistant and Model Context Protocol server for Twitter/X",
   "type": "module",
   "main": "build/index.js",
@@ -31,7 +31,7 @@
   "author": "genaiwithms",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "dotenv": "^16.4.7",
     "fs-extra": "^11.2.0",
     "inquirer": "^9.2.15",
@@ -51,6 +51,10 @@
     "esbuild": "^0.25.12",
     "jest": "^30.2.0",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "undici": "6.27.0",
+    "jsondiffpatch": "0.7.2"
   },
   "repository": {
     "type": "git",

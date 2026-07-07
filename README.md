@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/genaiwithms-twitter-mcp-badge.png)](https://mseep.ai/app/genaiwithms-twitter-mcp)
+
 <div align="center">
 
 # Twitter MCP Server

@@ -116,6 +116,30 @@ The easiest way to use this MCP server is through the interactive installer:
 npx @muhammadsiddiq/twitter-mcp
 ```
 
+### Run with Docker or Podman
+
+The included `Dockerfile` is a multi-stage build compatible with both Docker
+and Podman (Podman auto-detects `Dockerfile`). Credentials are never baked into
+the image — pass them at run time.
+
+```bash
+# Build
+docker build -t twitter-mcp .      # or: podman build -t twitter-mcp .
+
+# Run (stdio MCP server over stdin/stdout)
+docker run -i --rm \
+  -e API_KEY=... \
+  -e API_SECRET_KEY=... \
+  -e ACCESS_TOKEN=... \
+  -e ACCESS_TOKEN_SECRET=... \
+  twitter-mcp
+# Podman: replace `docker` with `podman` in the command above
+
+# Optional search backends
+#   -e XQUIK_API_KEY=... -e XQUIK_BASE_URL=...
+#   -e GETXAPI_API_KEY=... -e GETXAPI_BASE_URL=...
+```
+
 ## Configuration
 
 ### Step 1: Run the installer

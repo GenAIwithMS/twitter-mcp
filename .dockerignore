@@ -1,0 +1,17 @@
+node_modules/
+build/
+dist/
+.git/
+.gitignore
+.env
+.env.*
+*.log
+Dockerfile
+.dockerignore
+README.md
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+EnhancementPlan.md
+.github/
+test/

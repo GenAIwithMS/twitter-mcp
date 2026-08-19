@@ -114,29 +114,68 @@ The easiest way to use this MCP server is through the interactive installer:
 npx @muhammadsiddiq/twitter-mcp
 ```
 
-### Run with Docker or Podman
+### 🐳 Docker / Podman
 
-The included `Dockerfile` is a multi-stage build compatible with both Docker
-and Podman (Podman auto-detects `Dockerfile`). Credentials are never baked into
-the image — pass them at run time.
+An official image ships on [Docker Hub](https://hub.docker.com/r/genaiwithms/twitter-mcp)
+with the MCP stdio server as its entrypoint. It works identically with both
+**Podman** and **Docker**.
 
 ```bash
-# Build
-docker build -t twitter-mcp .      # or: podman build -t twitter-mcp .
+# Docker
+docker pull genaiwithms/twitter-mcp:latest
 
-# Run (stdio MCP server over stdin/stdout)
-docker run -i --rm \
-  -e API_KEY=... \
-  -e API_SECRET_KEY=... \
-  -e ACCESS_TOKEN=... \
-  -e ACCESS_TOKEN_SECRET=... \
-  twitter-mcp
-# Podman: replace `docker` with `podman` in the command above
-
-# Optional search backends
-#   -e XQUIK_API_KEY=... -e XQUIK_BASE_URL=...
-#   -e GETXAPI_API_KEY=... -e GETXAPI_BASE_URL=...
+# Podman
+podman pull docker.io/genaiwithms/twitter-mcp:latest
 ```
+
+The server speaks MCP over **stdio** (stdin/stdout), so instead of running CLI
+commands you point your MCP client at the container, or test it directly:
+
+```bash
+# Smoke test: the server answers an MCP initialize handshake and prints it to stdout
+printf '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}\n' \
+  | docker run -i --rm genaiwithms/twitter-mcp:latest
+```
+
+Provide your Twitter credentials with `-e` for real requests:
+
+```bash
+docker run -i --rm \
+    -e API_KEY="sk-..." \
+    -e API_SECRET_KEY="sk-..." \
+    -e ACCESS_TOKEN="sk-..." \
+    -e ACCESS_TOKEN_SECRET="sk-..." \
+    genaiwithms/twitter-mcp:latest
+```
+
+Optional search backends:
+
+```bash
+    -e XQUIK_API_KEY="..." -e XQUIK_BASE_URL="https://xquik.com" \
+    -e GETXAPI_API_KEY="..." -e GETXAPI_BASE_URL="https://api.getxapi.com" \
+```
+
+The container runs as a non-root user (`node`). Credentials are never baked into
+the image. `post_tweet_with_image` reads a local file path, so if you use that
+tool from the container, mount the image file with `-v /abs/path:/abs/path` and
+pass the same path.
+
+<details>
+<summary>Building the image yourself</summary>
+
+From the repository root, tag it for your own Docker Hub namespace:
+
+```bash
+# Docker
+docker build -t <user>/twitter-mcp:0.3.11 .
+docker push <user>/twitter-mcp:0.3.11
+
+# Podman
+podman build -t docker.io/<user>/twitter-mcp:0.3.11 .
+podman login docker.io
+podman push docker.io/<user>/twitter-mcp:0.3.11
+```
+</details>
 
 ## Configuration
 

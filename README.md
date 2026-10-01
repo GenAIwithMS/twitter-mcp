@@ -1,33 +1,52 @@
 <div align="center">
 
-# Twitter MCP Server
+<!-- Hero Banner -->
+<a href="https://github.com/GenAIwithMS/twitter-mcp">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F1419,50:1D9BF0,100:7856FF&height=230&section=header&text=Twitter%20MCP%20Server&fontSize=52&fontColor=ffffff&fontAlignY=38&animation=fadeIn&desc=Connect%20AI%20assistants%20to%20X%20(Twitter)%20using%20the%20Model%20Context%20Protocol&descSize=17&descAlignY=60" alt="Twitter MCP Server — Connect AI assistants to X (Twitter) using the Model Context Protocol" width="100%" />
+</a>
 
-### Connect AI assistants to X (Twitter) using the Model Context Protocol
+<!-- Animated feature ticker -->
+<a href="#features">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&duration=2500&pause=700&color=1D9BF0&center=true&vCenter=true&width=520&lines=Post+tweets;Upload+images;Search+tweets;Reply+to+conversations;Look+up+user+profiles;Fetch+conversation+threads;Monitor+mentions;Publish+smart+threads;Quote+tweets;Extract+media;Like%2C+retweet+%26+bookmark" alt="Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets • Extract media • Like, retweet & bookmark" />
+</a>
 
- Post tweets • Upload images • Search tweets • Reply to conversations • Look up user profiles • Fetch conversation threads • Monitor mentions • Publish smart threads • Quote tweets • Extract media • Like, retweet & bookmark
+<p>
+  <sub>
+    <code>Post tweets</code> · <code>Upload images</code> · <code>Search tweets</code> · <code>Reply to conversations</code> · <code>Look up user profiles</code> · <code>Fetch conversation threads</code><br/>
+    <code>Monitor mentions</code> · <code>Publish smart threads</code> · <code>Quote tweets</code> · <code>Extract media</code> · <code>Like, retweet &amp; bookmark</code>
+  </sub>
+</p>
 
----
+<br/>
 
 <!-- Badges Row 1: Registry & Quality -->
-[![twitter-mcp MCP server](https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp/badges/card.svg)](https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp)
+<a href="https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp"><img src="https://glama.ai/mcp/servers/GenAIwithMS/twitter-mcp/badges/card.svg" alt="twitter-mcp MCP server" /></a>
 
+<br/><br/>
 
 <!-- Badges Row 2: Tech Stack -->
-[![npm version](https://img.shields.io/npm/v/@muhammadsiddiq/twitter-mcp.svg?style=flat-square&color=cb3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/@muhammadsiddiq/twitter-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Node Version](https://img.shields.io/node/v/@muhammadsiddiq/twitter-mcp?style=flat-square&logo=node.js&logoColor=white&color=339933)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+<a href="https://www.npmjs.com/package/@muhammadsiddiq/twitter-mcp"><img src="https://img.shields.io/npm/v/@muhammadsiddiq/twitter-mcp.svg?style=for-the-badge&color=cb3837&logo=npm&logoColor=white" alt="npm version" /></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-F7DF1E.svg?style=for-the-badge&logoColor=black" alt="License: MIT" /></a>
+<a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@muhammadsiddiq/twitter-mcp?style=for-the-badge&logo=node.js&logoColor=white&color=339933" alt="Node Version" /></a>
+<a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.3-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
 
 <!-- Badges Row 3: Social -->
-[![GitHub Stars](https://img.shields.io/github/stars/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/GenAIwithMS/twitter-mcp?style=social)](https://github.com/GenAIwithMS/twitter-mcp/network/members)
+<p>
+  <a href="https://github.com/GenAIwithMS/twitter-mcp/stargazers"><img src="https://img.shields.io/github/stars/GenAIwithMS/twitter-mcp?style=for-the-badge&logo=github&color=1D9BF0&labelColor=0F1419" alt="GitHub Stars" /></a>
+  <a href="https://github.com/GenAIwithMS/twitter-mcp/network/members"><img src="https://img.shields.io/github/forks/GenAIwithMS/twitter-mcp?style=for-the-badge&logo=github&color=7856FF&labelColor=0F1419" alt="GitHub Forks" /></a>
+</p>
 
----
+<!-- Quick Nav -->
+<table>
+  <tr>
+    <td align="center"><a href="#quick-start"><b>🚀 Quick Start</b></a></td>
+    <td align="center"><a href="#features"><b>✨ Features</b></a></td>
+    <td align="center"><a href="#usage"><b>📖 Documentation</b></a></td>
+    <td align="center"><a href="./CONTRIBUTING.md"><b>🤝 Contributing</b></a></td>
+  </tr>
+</table>
 
-**[🚀 Quick Start](#quick-start)** &nbsp;•&nbsp;
-**[✨ Features](#features)** &nbsp;•&nbsp;
-**[📖 Documentation](#usage)** &nbsp;•&nbsp;
-**[🤝 Contributing](./CONTRIBUTING.md)**
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0F1419,50:1D9BF0,100:7856FF&height=3" width="100%" alt="" />
 
 </div>
 

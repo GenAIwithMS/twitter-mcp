@@ -55,7 +55,7 @@ export async function searchTweetsWithXquik(
     throw new Error('Missing XQUIK_API_KEY or HERMES_TWEET_API_KEY');
   }
 
-  const baseUrl = (process.env.XQUIK_BASE_URL || DEFAULT_XQUIK_BASE_URL).replace(/\/+$/, '');
+  const baseUrl = resolveBaseUrl(process.env.XQUIK_BASE_URL, DEFAULT_XQUIK_BASE_URL);
   const url = new URL('/api/v1/x/tweets/search', `${baseUrl}/`);
   url.searchParams.set('q', request.query);
   url.searchParams.set('limit', String(request.count));
@@ -79,6 +79,26 @@ export async function searchTweetsWithXquik(
       next_token: payload.meta?.next_token || payload.meta?.nextToken || payload.next_token || payload.nextToken,
     },
   };
+}
+
+export function resolveBaseUrl(envValue: string | undefined, fallback: string): string {
+  const raw = (envValue || fallback).replace(/\/+$/, '');
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error(`Invalid search base URL: ${raw}`);
+  }
+  const isLocalHttp =
+    parsed.protocol === 'http:' &&
+    (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1');
+  if (parsed.protocol !== 'https:' && !isLocalHttp) {
+    throw new Error('Search base URL must use https');
+  }
+  if (parsed.username || parsed.password) {
+    throw new Error('Search base URL must not contain credentials');
+  }
+  return raw;
 }
 
 function buildAuthHeaders(apiKey: string): Record<string, string> {
